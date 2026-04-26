@@ -35,4 +35,4 @@
 
 ## 许可
 
-MIT License
+MIT License v1.0
