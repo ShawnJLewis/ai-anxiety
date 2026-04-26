@@ -79,7 +79,7 @@ function render() { console.log("render called, node:", state.node, "choices:", 
       const tag = c.tags ? c.tags.map(t => '<span style="font-size:10px;color:#888;margin-right:4px">#' + t + '</span>').join('') : '';
       var _efx = JSON.stringify(c.effects || {});
 var _tgs = JSON.stringify(c.tags || []);
-html += '<button class="choice" onclick="choose(\'' + c.next + '\',' + _efx + ',' + _tgs + ')">' + tag + c.text + '</button>';
+html += '<button class="choice" data-next="' + c.next + '" data-effects="' + encodeURIComponent(JSON.stringify(c.effects || {})) + '" data-tags="' + encodeURIComponent(JSON.stringify(c.tags || [])) + '">' + tag + c.text + '</button>';
     }
     html += '</div>';
   } else if (node.ending) {
@@ -94,6 +94,14 @@ html += '<button class="choice" onclick="choose(\'' + c.next + '\',' + _efx + ',
   document.getElementById('stats').innerHTML = sHtml;
   document.getElementById('stats').style.display = 'flex';
   document.getElementById('game').innerHTML = html;
+  document.getElementById('choices').onclick = function(e) {
+    var btn = e.target.closest('.choice');
+    if (!btn) return;
+    var n = btn.getAttribute('data-next');
+    var ef = btn.getAttribute('data-effects');
+    var tg = btn.getAttribute('data-tags');
+    choose(n, ef ? JSON.parse(decodeURIComponent(ef)) : {}, tg ? JSON.parse(decodeURIComponent(tg)) : []);
+  };
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
