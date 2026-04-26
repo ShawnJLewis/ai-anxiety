@@ -23,11 +23,13 @@ jobs:
           tar -xzf android.tar.gz
           ls -la
 
-      - name: Copy web assets to Android
+      - name: Install npm dependencies
         run: |
-          mkdir -p app/src/main/assets/public
-          cp index.html app/src/main/assets/public/
-          cp story.json app/src/main/assets/public/
+          npm install --registry=https://registry.npmjs.org
+
+      - name: Sync Capacitor
+        run: |
+          npx cap sync android
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -40,8 +42,9 @@ jobs:
 
       - name: Build debug APK
         run: |
+          cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace 2>&1
+          ./gradlew assembleDebug 2>&1
         continue-on-error: true
 
       - name: Upload APK
@@ -49,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: aianxiety-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Create Release
         if: success()
@@ -57,7 +60,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const apkPath = 'app/build/outputs/apk/debug/app-debug.apk';
+            const apkPath = 'android/app/build/outputs/apk/debug/app-debug.apk';
             if (!fs.existsSync(apkPath)) { core.setFailed('APK not found'); return; }
             const apkData = fs.readFileSync(apkPath);
             let releaseId;
