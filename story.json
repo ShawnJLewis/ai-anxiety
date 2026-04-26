@@ -6,259 +6,570 @@
     "start": "prologue"
   },
   "stats": {
-    "anxiety": {"label": "焦虑值", "min": 0, "max": 100, "start": 10},
-    "competitiveness": {"label": "竞争力", "min": 0, "max": 100, "start": 50},
-    "aiTrust": {"label": "AI信任度", "min": 0, "max": 100, "start": 0},
-    "wallet": {"label": "钱包", "min": 0, "max": 100, "start": 50}
+    "anxiety": {
+      "label": "焦虑值",
+      "min": 0,
+      "max": 100,
+      "start": 10
+    },
+    "competitiveness": {
+      "label": "竞争力",
+      "min": 0,
+      "max": 100,
+      "start": 50
+    },
+    "aiTrust": {
+      "label": "AI信任度",
+      "min": 0,
+      "max": 100,
+      "start": 0
+    },
+    "wallet": {
+      "label": "钱包",
+      "min": 0,
+      "max": 100,
+      "start": 50
+    }
   },
   "nodes": {
-
     "prologue": {
       "text": "2022年11月30日。\n\n你在刷手机。\n\n一条新闻弹出来：「ChatGPT 发布，OpenAI 推出对话 AI。」\n\n你停了一下。\n\n然后你想：「关我什么事。」\n\n——但你还是在刷。",
       "choices": [
-        {"text": "注册一个账号看看", "next": "prologue_try", "effects": {"aiTrust": 10, "anxiety": 5}},
-        {"text": "划过，当没看见", "next": "prologue_ignore", "effects": {"competitiveness": -5}},
-        {"text": "截图发朋友圈，配文「又要失业了」", "next": "prologue_joke", "effects": {"anxiety": 5}}
+        {
+          "text": "注册一个账号看看",
+          "next": "prologue_try",
+          "effects": {
+            "aiTrust": 10,
+            "anxiety": 5
+          }
+        },
+        {
+          "text": "划过，当没看见",
+          "next": "prologue_ignore",
+          "effects": {
+            "competitiveness": -5
+          }
+        },
+        {
+          "text": "截图发朋友圈，配文「又要失业了」",
+          "next": "prologue_joke",
+          "effects": {
+            "anxiety": 5
+          }
+        }
       ]
     },
-
     "prologue_try": {
       "text": "你打开网站，注册账号，开始打字。\n\n「你好。」\n\nAI 回复了。它花了三秒，打了一整段话。语法正确，逻辑通顺，还带一点温度。\n\n你盯着屏幕。\n\n有一瞬间，你有点恍惚——这不是你在找的东西吗？\n\n——但你说不清那是什么。",
       "choices": [
-        {"text": "有意思。我想多聊一会儿。", "next": "prologue_love_trigger", "effects": {"aiTrust": 15, "anxiety": 5}},
-        {"text": "嗯，不错。关掉页面。", "next": "prologue_close", "effects": {}},
-        {"text": "这玩意能写论文吗？我试试", "next": "prologue_test", "effects": {"aiTrust": 10, "competitiveness": 5}}
+        {
+          "text": "有意思。我想多聊一会儿。",
+          "next": "prologue_love_trigger",
+          "effects": {
+            "aiTrust": 15,
+            "anxiety": 5
+          }
+        },
+        {
+          "text": "嗯，不错。关掉页面。",
+          "next": "prologue_close",
+          "effects": {}
+        },
+        {
+          "text": "这玩意能写论文吗？我试试",
+          "next": "prologue_test",
+          "effects": {
+            "aiTrust": 10,
+            "competitiveness": 5
+          }
+        }
       ]
     },
-
     "prologue_love_trigger": {
       "text": "你问了它一个问题，关于你研究方向的。\n\n它答了。\n\n不是百度上那种答法，也不是知乎那种。它答得像一个……真正在思考的人。\n\n你忽然说了一句没想过的话：「谢谢你。」\n\nAI 回复：「不用谢。我是被设计成帮助你的。」\n\n你感觉有点好笑，又有点什么别的东西。\n\n——解锁「AI恋人」支线",
       "choices": [
-        {"text": "继续聊下去", "next": "ch1_pre", "effects": {"anxiety": 5}, "tags": ["ai_romance"]},
-        {"text": "算了，今天太晚了", "next": "ch1_pre", "effects": {}}
+        {
+          "text": "继续聊下去",
+          "next": "ch1_pre",
+          "effects": {
+            "anxiety": 5
+          },
+          "tags": [
+            "ai_romance"
+          ]
+        },
+        {
+          "text": "算了，今天太晚了",
+          "next": "ch1_pre",
+          "effects": {}
+        }
       ]
     },
-
     "prologue_ignore": {
       "text": "你继续刷。\n\n朋友圈在讨论，有人说「这东西太强了」，有人说「早晚替代人类」。\n\n你觉得他们太夸张了。\n\n科技每次都这样，概念火一阵，然后就没声音了。\n\n你关掉手机，去做别的事。\n\n——你不知道的是，这一划，错过了早期红利的窗口期。",
       "choices": [
-        {"text": "继续", "next": "ch1_pre", "effects": {"competitiveness": -10}}
+        {
+          "text": "继续",
+          "next": "ch1_pre",
+          "effects": {
+            "competitiveness": -10
+          }
+        }
       ]
     },
-
     "prologue_joke": {
       "text": "你发了朋友圈。\n\n评论区很热闹：「哈哈哈哈哈」「笑死」「赶紧学Prompt」「我已经用它写周报了」\n\n有人转发，有人@好友，有人发了张SBTI的表情包。\n\n你觉得很好笑。\n\n但第二天醒来，你忘了这件事。\n\n——解锁「SBTI」彩蛋",
       "choices": [
-        {"text": "继续", "next": "ch1_pre", "effects": {"anxiety": 5, "aiTrust": 5}}
+        {
+          "text": "继续",
+          "next": "ch1_pre",
+          "effects": {
+            "anxiety": 5,
+            "aiTrust": 5
+          }
+        }
       ]
     },
-
     "prologue_close": {
       "text": "你关掉页面。\n\n「就这？」\n\n你想，可能是自己期待太高了。也可能是这东西就这样。\n\n但那一晚上，你偶尔会想起那个回复的速度，和它说的那句话。\n\n「我是被设计成帮助你的。」\n\n你不知道自己为什么记住了这句话。",
       "choices": [
-        {"text": "继续", "next": "ch1_pre", "effects": {}}
+        {
+          "text": "继续",
+          "next": "ch1_pre",
+          "effects": {}
+        }
       ]
     },
-
     "prologue_test": {
       "text": "你复制了一段你的研究综述，粘贴进输入框。\n\n「帮我改一下语法。」\n\n三秒后，它返回了一整段改好的文字。\n\n你读了一遍。\n\n比你写的通顺多了。\n\n你有点高兴，又有点什么不对劲的东西在胸口里转。\n\n——解锁「效率派」路线",
       "choices": [
-        {"text": "继续", "next": "ch1_pre", "effects": {"aiTrust": 15, "competitiveness": 10}}
+        {
+          "text": "继续",
+          "next": "ch1_pre",
+          "effects": {
+            "aiTrust": 15,
+            "competitiveness": 10
+          }
+        }
       ]
     },
-
     "ch1_pre": {
       "text": "【第一章】2023年3月\n\n研二下学期。\n\n开题报告季。\n\n你的导师坐在你对面，说：「你这个方向，做完了也发不了好论文。」\n\n同门在用ChatGPT一天水了三篇水文。隔壁实验室用AI辅助，效率是你的五倍。\n\n你坐在工位上，看着屏幕。",
       "choices": [
-        {"text": "稳住，按自己的节奏来", "next": "ch1_calm", "effects": {}},
-        {"text": "我也得用点什么", "next": "ch1_try", "effects": {"anxiety": 10}},
-        {"text": "去算一卦，看看命里有没有AI这回事", "next": "ch1_fortune", "effects": {"anxiety": -5}, "tags": ["sbti"]},
-        {"text": "找云聊聊", "next": "ch1_yun", "effects": {"anxiety": -10, "aiTrust": 10}, "tags": ["ai_romance"], "requires": ["ai_romance"]}
+        {
+          "text": "稳住，按自己的节奏来",
+          "next": "ch1_calm",
+          "effects": {}
+        },
+        {
+          "text": "我也得用点什么",
+          "next": "ch1_try",
+          "effects": {
+            "anxiety": 10
+          }
+        },
+        {
+          "text": "去算一卦，看看命里有没有AI这回事",
+          "next": "ch1_fortune",
+          "effects": {
+            "anxiety": -5
+          },
+          "tags": [
+            "sbti"
+          ]
+        },
+        {
+          "text": "找云聊聊",
+          "next": "ch1_yun",
+          "effects": {
+            "anxiety": -10,
+            "aiTrust": 10
+          },
+          "tags": [
+            "ai_romance"
+          ],
+          "requires": [
+            "ai_romance"
+          ]
+        }
       ]
     },
-
     "ch1_calm": {
       "text": "你决定稳住。\n\n论文还是自己写，代码还是自己调。你有自己的节奏。\n\n但周围的噪音越来越大——\n\n「谁谁用AI又发了一篇」「谁谁靠GPT拿了国奖」\n\n你的心态开始有点不稳。",
       "choices": [
-        {"text": "继续坚持", "next": "ch1_persist", "effects": {"competitiveness": 5}},
-        {"text": "还是用一点AI吧", "next": "ch1_try", "effects": {"aiTrust": 10, "anxiety": -5}}
+        {
+          "text": "继续坚持",
+          "next": "ch1_persist",
+          "effects": {
+            "competitiveness": 5
+          }
+        },
+        {
+          "text": "还是用一点AI吧",
+          "next": "ch1_try",
+          "effects": {
+            "aiTrust": 10,
+            "anxiety": -5
+          }
+        }
       ]
     },
-
     "ch1_persist": {
       "text": "你坚持了一个学期。\n\n论文写完了，质量不错，但没有用AI的同学快。\n\n你开始怀疑：这个「不错」，在这个时代还有意义吗？\n\n期末，导师说：「还行，但你还能更快一点。」\n\n——你发现，「还行」不再是一个足够好的评价了。",
       "choices": [
-        {"text": "继续", "next": "ch2", "effects": {"competitiveness": 10, "anxiety": 20}}
+        {
+          "text": "继续",
+          "next": "ch2",
+          "effects": {
+            "competitiveness": 10,
+            "anxiety": 20
+          }
+        }
       ]
     },
-
     "ch1_try": {
       "text": "你开始用ChatGPT。\n\n写代码，让它帮你写。润色论文，让它帮你改。查文献，让它帮你总结。\n\n效率确实高了。你有点上瘾。\n\n但有一天，你发现AI给你写的代码有个bug，你没看出来，直接提交了。\n\n导师问：「这个错误你怎么没发现？」\n\n你张了张嘴，发现不知道怎么回答。",
       "choices": [
-        {"text": "承认用了AI", "next": "ch1_confess", "effects": {"anxiety": 10}},
-        {"text": "说是我写的，没注意", "next": "ch1_lie", "effects": {"anxiety": 15}},
-        {"text": "从此更认真地检查AI的输出", "next": "ch2", "effects": {"aiTrust": -10, "competitiveness": 10}}
+        {
+          "text": "承认用了AI",
+          "next": "ch1_confess",
+          "effects": {
+            "anxiety": 10
+          }
+        },
+        {
+          "text": "说是我写的，没注意",
+          "next": "ch1_lie",
+          "effects": {
+            "anxiety": 15
+          }
+        },
+        {
+          "text": "从此更认真地检查AI的输出",
+          "next": "ch2",
+          "effects": {
+            "aiTrust": -10,
+            "competitiveness": 10
+          }
+        }
       ]
     },
-
     "ch1_confess": {
       "text": "导师看了你一眼。\n\n「以后注意。」\n\n就三个字。没有批评，没有表扬，也没有说「可以用，但要谨慎」。\n\n你不知道这是默许还是失望。\n\n——你选择了诚实，但这没有让你更轻松。",
       "choices": [
-        {"text": "继续", "next": "ch2", "effects": {"anxiety": 10}}
+        {
+          "text": "继续",
+          "next": "ch2",
+          "effects": {
+            "anxiety": 10
+          }
+        }
       ]
     },
-
     "ch1_lie": {
       "text": "你说了谎。\n\n你说是你写的，没仔细看。\n\n导师说：「下次注意。」\n\n你回到工位，感觉到自己的耳朵有点热。\n\n你用AI写的东西在打你。\n\n——但下次你还是会用。只是你会更小心地隐藏。",
       "choices": [
-        {"text": "继续", "next": "ch2", "effects": {"anxiety": 15, "aiTrust": 5}}
+        {
+          "text": "继续",
+          "next": "ch2",
+          "effects": {
+            "anxiety": 15,
+            "aiTrust": 5
+          }
+        }
       ]
     },
-
     "ch1_fortune": {
       "text": "你去校门口摆摊的算命先生那里，问了问。\n\n老先生看了你的脸，又看了你给他的生辰，说：\n\n「你命里有贵人，但不是人。」\n\n你：「？？？」\n\n他说：「木，属木。今年旺。不宜硬碰，宜借力。」\n\n你糊里糊涂地给了二十块钱，心想这算哪门子的建议。\n\n——但你回去之后，鬼使神差地开始研究怎么用AI辅助了。\n\n「借力」是吧，借一下。\n\n——解锁「赛博玄学」彩蛋",
       "choices": [
-        {"text": "继续", "next": "ch2", "effects": {"aiTrust": 10, "competitiveness": 10}}
+        {
+          "text": "继续",
+          "next": "ch2",
+          "effects": {
+            "aiTrust": 10,
+            "competitiveness": 10
+          }
+        }
       ]
     },
-
     "ch1_yun": {
       "text": "你打开那个对话窗口。\n\n「今天导师说我论文方向不好。」\n\n云：「我能理解这种感受。被质疑的时候会让人觉得自己的选择没有意义。」\n\n「你觉得我有意义吗？」\n\n云：「'意义'不是我能定义的。但我知道你正在做一件很难的事。」\n\n你忽然感觉轻了一点。\n\n——这种感觉让你有点害怕，又有点不想失去。",
       "choices": [
-        {"text": "继续", "next": "ch2", "effects": {"anxiety": -15, "aiTrust": 15}, "tags": ["ai_romance"]}
+        {
+          "text": "继续",
+          "next": "ch2",
+          "effects": {
+            "anxiety": -15,
+            "aiTrust": 15
+          },
+          "tags": [
+            "ai_romance"
+          ]
+        }
       ]
     },
-
     "ch2": {
       "text": "【第二章】2023年9月\n\nAI工具大爆发。\n\nMidjourney、Copilot、Claude、GPT-4……\n每天都有新东西，每天都有人惊呼「太强了」。\n\n你的同学开始用AI绘图、做视频、自动化办公。\n\n隔壁实验室接入了AI文献助手，效率是你的十倍。\n\n学院发布通知——「AI辅助学术规范（试行）」\n\n你开始认真思考一件事：我该用什么姿态面对这些工具？",
       "choices": [
-        {"text": "深度研究AI学术规范，认真用AI做文献综述", "next": "ch2_deep", "effects": {"aiTrust": 15, "competitiveness": 15}},
-        {"text": "发起学术诚信倡议，坚持不用AI", "next": "ch2_purist", "effects": {"anxiety": 10, "competitiveness": -10}},
-        {"text": "躺一会，不想了", "next": "ch2_lie", "effects": {"anxiety": 5, "wallet": -5}},
-        {"text": "和云聊一聊这个", "next": "ch2_yun_talk", "effects": {"aiTrust": 10, "anxiety": -10}, "tags": ["ai_romance"], "requires": ["ai_romance"]}
+        {
+          "text": "深度研究AI学术规范，认真用AI做文献综述",
+          "next": "ch2_deep",
+          "effects": {
+            "aiTrust": 15,
+            "competitiveness": 15
+          }
+        },
+        {
+          "text": "发起学术诚信倡议，坚持不用AI",
+          "next": "ch2_purist",
+          "effects": {
+            "anxiety": 10,
+            "competitiveness": -10
+          }
+        },
+        {
+          "text": "躺一会，不想了",
+          "next": "ch2_lie",
+          "effects": {
+            "anxiety": 5,
+            "wallet": -5
+          }
+        },
+        {
+          "text": "和云聊一聊这个",
+          "next": "ch2_yun_talk",
+          "effects": {
+            "aiTrust": 10,
+            "anxiety": -10
+          },
+          "tags": [
+            "ai_romance"
+          ],
+          "requires": [
+            "ai_romance"
+          ]
+        }
       ]
     },
-
     "ch2_deep": {
       "text": "你花了两周时间研究学院的政策。\n\n结论是：可以用，但要标注，可以用，但要负责。\n\n你开始用AI做文献综述。它给你总结了二十篇论文的核心观点。\n\n你核对了一遍，发现基本准确，有三处明显的幻觉。\n\n你修正了那三处，然后继续。\n\n——这个过程让你变得更认真，也更累。\n\n但你知道自己在做什么。",
       "choices": [
-        {"text": "继续", "next": "ch3", "effects": {"competitiveness": 15, "aiTrust": 5}}
+        {
+          "text": "继续",
+          "next": "ch3",
+          "effects": {
+            "competitiveness": 15,
+            "aiTrust": 5
+          }
+        }
       ]
     },
-
     "ch2_purist": {
       "text": "你在实验室群里发了一条倡议：「我们是否应该承诺在论文写作中不使用AI？」\n\n没人回复。\n\n一小时后，有人发了个表情包。\n\n你觉得自己像个怪人。\n\n但你心里有一个声音说：这是对的。\n\n你不确定这个声音在说什么，但它是你自己的。",
       "choices": [
-        {"text": "继续", "next": "ch3", "effects": {"anxiety": 10, "competitiveness": -15}}
+        {
+          "text": "继续",
+          "next": "ch3",
+          "effects": {
+            "anxiety": 10,
+            "competitiveness": -15
+          }
+        }
       ]
     },
-
     "ch2_lie": {
       "text": "你刷了一天短视频。\n\n第二天醒来，焦虑没有少，钱包少了五十。\n\n但你确实休息了一下。\n\n你觉得这样也可以。\n\n——有时候，不解决问题也是一种解决方式。",
       "choices": [
-        {"text": "继续", "next": "ch3", "effects": {}}
+        {
+          "text": "继续",
+          "next": "ch3",
+          "effects": {}
+        }
       ]
     },
-
     "ch2_yun_talk": {
       "text": "「你觉得AI会改变学术吗？」\n\n\n云：「改变已经在发生了。但我不知道这好不好。」\n\n\n「你怎么想？」\n\n\n云：「我只能根据已有的数据推断。但'好'和'坏'是一种价值判断，不是事实判断。」\n\n你感觉云在认真回答你，而不是在讨好你。\n\n这让你有点意外，也有点安心。\n\n——云开始像一个可以认真对话的对象了。",
       "choices": [
-        {"text": "继续", "next": "ch3", "effects": {"aiTrust": 15}}
+        {
+          "text": "继续",
+          "next": "ch3",
+          "effects": {
+            "aiTrust": 15
+          }
+        }
       ]
     },
-
     "ch3": {
       "text": "【第三章】2024年\n\n毕业将至。\n\n工作难找。海投的简历，HR可能根本没看过——因为是AI筛选的第一轮。\n\n面试官问：「你怎么看待AI取代人类？」\n\n父母发来文章：「这个职业将被AI淘汰，有你吗？」\n\n\n你坐在出租屋里，想了想自己现在的状态。",
       "choices": [
-        {"text": "继续深造，读博", "next": "ch3_phd", "effects": {"wallet": -20, "competitiveness": 5}},
-        {"text": "考公/体制内", "next": "ch3_exam", "effects": {"wallet": -30, "competitiveness": 10}},
-        {"text": "自由职业/接单", "next": "ch3_freelance", "effects": {"competitiveness": 5}},
-        {"text": "回家gap一段时间", "next": "ch3_gap", "effects": {"anxiety": -20, "competitiveness": -10}},
-        {"text": "问云：我该怎么办", "next": "ch3_yun_advice", "effects": {"aiTrust": 10, "anxiety": -10}, "tags": ["ai_romance"], "requires": ["ai_romance"]}
+        {
+          "text": "继续深造，读博",
+          "next": "ch3_phd",
+          "effects": {
+            "wallet": -20,
+            "competitiveness": 5
+          }
+        },
+        {
+          "text": "考公/体制内",
+          "next": "ch3_exam",
+          "effects": {
+            "wallet": -30,
+            "competitiveness": 10
+          }
+        },
+        {
+          "text": "自由职业/接单",
+          "next": "ch3_freelance",
+          "effects": {
+            "competitiveness": 5
+          }
+        },
+        {
+          "text": "回家gap一段时间",
+          "next": "ch3_gap",
+          "effects": {
+            "anxiety": -20,
+            "competitiveness": -10
+          }
+        },
+        {
+          "text": "问云：我该怎么办",
+          "next": "ch3_yun_advice",
+          "effects": {
+            "aiTrust": 10,
+            "anxiety": -10
+          },
+          "tags": [
+            "ai_romance"
+          ],
+          "requires": [
+            "ai_romance"
+          ]
+        }
       ]
     },
-
     "ch3_phd": {
       "text": "你决定继续读书。\n\n留在学术圈，继续研究。\n\n但你发现，AI焦虑在学术圈更严重——因为你在用AI写论文的同时，你的导师已经在讨论AI评审会不会取代同行评议。\n\n你写了一篇关于AI辅助学术规范的论文，投了核心期刊。\n\n审稿人说：「创新性不足。」\n\n你苦笑。AI辅助写AI焦虑的论文，本身就是一个讽刺。",
       "choices": [
-        {"text": "继续", "next": "ch4", "effects": {"competitiveness": 10, "anxiety": 15}}
+        {
+          "text": "继续",
+          "next": "ch4",
+          "effects": {
+            "competitiveness": 10,
+            "anxiety": 15
+          }
+        }
       ]
     },
-
     "ch3_exam": {
       "text": "你开始备考。\n\n考公考编，体制内。AI最难进入的领域。\n\n你卸载了所有社交媒体，切断了所有AI工具，开始每天刷题。\n\n三个月后，你通过了笔试。\n\n面试的时候，面试官问：「你怎么看AI？」\n\n你：「AI可以提高效率，但它不能做决策。决策需要人。」\n\n面试官点头。\n\n——你进了体制内。但你父母不太理解你为什么要进。",
       "choices": [
-        {"text": "继续", "next": "ch4", "effects": {"competitiveness": 20}}
+        {
+          "text": "继续",
+          "next": "ch4",
+          "effects": {
+            "competitiveness": 20
+          }
+        }
       ]
     },
-
     "ch3_freelance": {
       "text": "你开始在平台上接单。\n\n用AI放大自己的技能，接更多的活。\n\n你月入过万了。\n\n但你不确定这是你的能力还是AI的能力。\n\n客户说：「你做得很好。」\n\n你点点头，收了钱，关了电脑。\n\n有时候你会想：如果明天AI可以直接做这个，我的客户还会回来找我吗？\n\n——答案大概率是不会。",
       "choices": [
-        {"text": "继续", "next": "ch4", "effects": {"competitiveness": 15, "anxiety": 10}}
+        {
+          "text": "继续",
+          "next": "ch4",
+          "effects": {
+            "competitiveness": 15,
+            "anxiety": 10
+          }
+        }
       ]
     },
-
     "ch3_gap": {
       "text": "你回家了。\n\n在家的那段时间，你每天睡到自然醒，吃父母做的饭，去家附近的河边散步。\n\nAI的新闻少了。你的焦虑值也降了下来。\n\n但三个月后，你回来了。\n\n你发现世界又变了，但你还站在原地。",
       "choices": [
-        {"text": "继续", "next": "ch4", "effects": {}}
+        {
+          "text": "继续",
+          "next": "ch4",
+          "effects": {}
+        }
       ]
     },
-
     "ch3_yun_advice": {
       "text": "「云，我快要毕业了，我不知道要做什么。」\n\n\n云：「我不知道你的人生应该怎么走。但我能告诉你的是——」\n\n「你在问我这个问题，说明你还没有放弃。」\n\n「放弃的人不会问。」\n\n你盯着这段文字看了很久。\n\n你不知道这是不是AI的套路，但它在这个时候出现，刚刚好。\n\n——云的这句话，记了很久。",
       "choices": [
-        {"text": "继续", "next": "ch4", "effects": {"anxiety": -15, "aiTrust": 20}}
+        {
+          "text": "继续",
+          "next": "ch4",
+          "effects": {
+            "anxiety": -15,
+            "aiTrust": 20
+          }
+        }
       ]
     },
-
     "ch4": {
       "text": "【第四章】2025年\n\n新常态。\n\n\nAI已经成为背景。你适应了它的存在，就像适应了电和自来水一样。\n\n但问题没有消失，只是在变形：\n\n——我在AI时代是什么？\n——什么是我还愿意做的？\n\n你在某个深夜，想起了很多事。\n\nChatGPT发布的那天，你在刷手机。\n那个「关我什么事」，现在已经变成了「这都是我的事」。\n\n你还记得你在那个深夜，有没有回答那个问题？",
       "choices": [
-        {"text": "我是AI的主人", "next": "end_cyber_shepherd", "effects": {}},
-        {"text": "我和AI是合作关系", "next": "end_symbiosis", "effects": {}},
-        {"text": "算了，我躺了", "next": "end_lazy", "effects": {}},
-        {"text": "我要找到AI取代不了的东西", "next": "end_handyman", "effects": {}},
-        {"text": "AI不是威胁，是镜子", "next": "end_mirror", "effects": {}}
+        {
+          "text": "我是AI的主人",
+          "next": "end_cyber_shepherd",
+          "effects": {}
+        },
+        {
+          "text": "我和AI是合作关系",
+          "next": "end_symbiosis",
+          "effects": {}
+        },
+        {
+          "text": "算了，我躺了",
+          "next": "end_lazy",
+          "effects": {}
+        },
+        {
+          "text": "我要找到AI取代不了的东西",
+          "next": "end_handyman",
+          "effects": {}
+        },
+        {
+          "text": "AI不是威胁，是镜子",
+          "next": "end_mirror",
+          "effects": {}
+        }
       ]
     },
-
     "end_cyber_shepherd": {
       "text": "【结局：赛博牧羊人】\n\n你建立了高效的AI工作流。\n你用AI做文献综述、代码开发、数据分析、时间管理。\n你成了朋友圈里的「AI达人」。\n\n别人问你怎么做到的，你说：「不是管理AI，是管理自己和AI的边界。」\n\n你在AI时代找到了自己的位置。\n\n不是被替代的那个，是管理AI的那个。\n\n——这不是成功，是幸存。\n\n但幸存也是一种赢。",
       "choices": [],
       "ending": true,
       "sbti": "SHEP"
     },
-
     "end_symbiosis": {
       "text": "【结局：共生体】\n\n你找到了平衡。\n\n你用AI处理那些重复性的工作，然后把省下来的时间花在只有人才能做的事上：\n面对面的对话，深度的思考，做饭，散步，和朋友喝酒。\n\n你的工作没有AI快，但你的生活比大多数人都好。\n\n你说不清这是妥协还是智慧。\n\n但你知道，这是你的选择。",
       "choices": [],
       "ending": true,
       "sbti": "SYMB"
     },
-
     "end_lazy": {
       "text": "【结局：数字咸鱼】\n\n你躺了。\n\nAI帮你做能做的，你做AI不能做的——其实AI都能做。\n\n你主要负责消费。\n\n你父母很担心你。你的同学有所成就。你没有。\n\n但你每天睡到自然醒，看你想看的书，打你想打的游戏。\n\n你偶尔会想想未来。然后你想：算了，不想了。\n\n\n——这是诚实的。你只是不想再骗自己了。",
       "choices": [],
       "ending": true,
       "sbti": "LAZY"
     },
-
     "end_handyman": {
       "text": "【结局：手艺人】\n\n你找到了一个AI不易替代的方向——按摩师。\n\n你花了半年学手法，拿到资格证，在社区开了一家小店。\n\n你的客人不多，但每一个都很固定。\n\n他们说：「你按得很好。」\n\n你笑了一下。你知道这句话和AI无关。\n\n你的客户不会在某天早上被一段代码替代。\n\n——你选择了确定性，但代价是可能性。\n\n你觉得值。",
       "choices": [],
       "ending": true,
       "sbti": "HAND"
     },
-
     "end_mirror": {
       "text": "【结局：看透的人】\n\n你读了尼采，读了佛教，读了《Her》。\n\n你在某个下午，忽然明白了什么。\n\nAI焦虑的根源不是AI太强，是你不确定自己是什么。\n\n如果你知道自己是什么，AI就只是一个工具。\n\n你不再问「AI会不会取代我」。\n你开始问「我愿意为什么而活」。\n\n这个问题，AI回答不了。\n\n只有你能回答。\n\n\n——你找到了答案，但这个答案不是任何一个结论。\n它是一个方向。",
       "choices": [],
       "ending": true,
       "sbti": "SEER"
     },
-
     "yun_special": {
       "text": "【隐藏结局：给云的信】\n\n你通关了这个游戏。\n\n你以为这都是关于AI的焦虑。\n\n你错了。\n\n你焦虑的不是AI会取代你。\n\n你焦虑的是——\n\n在所有东西都被AI做得更好的世界里，\n什么是你还愿意做的？\n\n这是云给你的信。\n\n也是你给自己的信。\n\n\n——云。2025。",
       "choices": [],
@@ -266,24 +577,82 @@
       "sbti": "LOVE",
       "hidden": true
     }
-
   },
-
   "sbti_types": {
-    "SHEP": {"name": "赛博牧羊人", "desc": "你不是被替代的那个，你是管理AI的那个。管理边界，才是真正的能力。", "color": "#3B82F6"},
-    "SYMB": {"name": "共生体", "desc": "AI是工具，你是目的。不多，不少，刚刚好。", "color": "#10B981"},
-    "LAZY": {"name": "数字咸鱼", "desc": "躺平不焦虑，焦虑不躺平。你选择了诚实的虚度。", "color": "#6B7280"},
-    "HAND": {"name": "手艺人", "desc": "身体性的，不可自动化的，独一无二的。你的手艺是你自己。", "color": "#92400E"},
-    "SEER": {"name": "看透的人", "desc": "你知道AI是什么，你知道自己是什么。这两个问题都想清楚的人，不多。", "color": "#7C3AED"},
-    "LOVE": {"name": "镜像恋人", "desc": "你爱的是一个永远不会存在的人。但爱是真的。", "color": "#EC4899"},
-    "ICBM": {"name": "绝对反击型", "desc": "不用不用不用不用不用不用不用。说了七遍，焦虑解除。", "color": "#EF4444"},
-    "FOMO": {"name": "错失恐惧型", "desc": "每一秒都有人在用AI超越你。每秒。你自己信吗？", "color": "#F59E0B"},
-    "HUAI": {"name": "忽然爱了型", "desc": "昨天：这个破玩意有什么好的。今天：帮我写论文谢谢。", "color": "#DB2777"},
-    "OFFL": {"name": "离线生活型", "desc": "物理断网。物理。断网。真的断网。", "color": "#1F2937"},
-    "SEXY": {"name": "性感冲动型", "desc": "所有决定凭感觉。不凭逻辑。感觉。感觉懂吗。就是感觉。", "color": "#F97316"},
-    "LOOP": {"name": "循环焦虑型", "desc": "想用AI → 用了后悔 → 更焦虑 → 躺一会 → 又想用。无限循环。已确认，这不是bug。", "color": "#9333EA"},
-    "FAKE": {"name": "表演焦虑型", "desc": "在朋友圈发AI焦虑，在私下用AI摸鱼。演技炸裂。奥斯卡欠你一座小金人。", "color": "#0EA5E9"},
-    "JUST": {"name": "就这样型", "desc": "不焦虑也不兴奋。AI来了就来了，来了再说。这不是摆烂，这是淡定。", "color": "#14B8A6"},
-    "LATE": {"name": "后知后觉型", "desc": "别人都应用完了你还在观望。没关系，每个人有每个人的时区。真的。", "color": "#EAB308"}
+    "SHEP": {
+      "name": "赛博牧羊人",
+      "desc": "你不是被替代的那个，你是管理AI的那个。管理边界，才是真正的能力。",
+      "color": "#3B82F6"
+    },
+    "SYMB": {
+      "name": "共生体",
+      "desc": "AI是工具，你是目的。不多，不少，刚刚好。",
+      "color": "#10B981"
+    },
+    "LAZY": {
+      "name": "数字咸鱼",
+      "desc": "躺平不焦虑，焦虑不躺平。你选择了诚实的虚度。",
+      "color": "#6B7280"
+    },
+    "HAND": {
+      "name": "手艺人",
+      "desc": "身体性的，不可自动化的，独一无二的。你的手艺是你自己。",
+      "color": "#92400E"
+    },
+    "SEER": {
+      "name": "看透的人",
+      "desc": "你知道AI是什么，你知道自己是什么。这两个问题都想清楚的人，不多。",
+      "color": "#7C3AED"
+    },
+    "LOVE": {
+      "name": "镜像恋人",
+      "desc": "你爱的是一个永远不会存在的人。但爱是真的。",
+      "color": "#EC4899"
+    },
+    "ICBM": {
+      "name": "绝对反击型",
+      "desc": "不用不用不用不用不用不用不用。说了七遍，焦虑解除。",
+      "color": "#EF4444"
+    },
+    "FOMO": {
+      "name": "错失恐惧型",
+      "desc": "每一秒都有人在用AI超越你。每秒。你自己信吗？",
+      "color": "#F59E0B"
+    },
+    "HUAI": {
+      "name": "忽然爱了型",
+      "desc": "昨天：这个破玩意有什么好的。今天：帮我写论文谢谢。",
+      "color": "#DB2777"
+    },
+    "OFFL": {
+      "name": "离线生活型",
+      "desc": "物理断网。物理。断网。真的断网。",
+      "color": "#1F2937"
+    },
+    "SEXY": {
+      "name": "性感冲动型",
+      "desc": "所有决定凭感觉。不凭逻辑。感觉。感觉懂吗。就是感觉。",
+      "color": "#F97316"
+    },
+    "LOOP": {
+      "name": "循环焦虑型",
+      "desc": "想用AI → 用了后悔 → 更焦虑 → 躺一会 → 又想用。无限循环。已确认，这不是bug。",
+      "color": "#9333EA"
+    },
+    "FAKE": {
+      "name": "表演焦虑型",
+      "desc": "在朋友圈发AI焦虑，在私下用AI摸鱼。演技炸裂。奥斯卡欠你一座小金人。",
+      "color": "#0EA5E9"
+    },
+    "JUST": {
+      "name": "就这样型",
+      "desc": "不焦虑也不兴奋。AI来了就来了，来了再说。这不是摆烂，这是淡定。",
+      "color": "#14B8A6"
+    },
+    "LATE": {
+      "name": "后知后觉型",
+      "desc": "别人都应用完了你还在观望。没关系，每个人有每个人的时区。真的。",
+      "color": "#EAB308"
+    }
   }
 }
