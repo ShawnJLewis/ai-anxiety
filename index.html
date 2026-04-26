@@ -77,7 +77,7 @@ function render() { console.log("render called, node:", state.node, "choices:", 
     for (const c of node.choices) {
       if (c.requires && !c.requires.some(t => state.tags.includes(t))) continue;
       const tag = c.tags ? c.tags.map(t => '<span style="font-size:10px;color:#888;margin-right:4px">#' + t + '</span>').join('') : '';
-      html += '<button class="choice" onclick="choose('' + c.next + '', ' + JSON.stringify(c.effects || {}) + ', ' + JSON.stringify(c.tags || []) + ')">' + tag + c.text + '</button>';
+      html += '<button class="choice" data-next=" + c.next + " data-effects=' + encodeURIComponent(JSON.stringify(c.effects || {})) + " data-tags=' + encodeURIComponent(JSON.stringify(c.tags || [])) + '>' + tag + c.text + '</button>';
     }
     html += '</div>';
   } else if (node.ending) {
