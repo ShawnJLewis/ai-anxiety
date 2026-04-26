@@ -2,10 +2,92 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0;url=www/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>最后的简历</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a0f; color: #e0e0e8; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+    #stats { width: 100%; max-width: 640px; display: none; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .stat { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    .stat-label { width: 70px; color: #6b6b7a; flex-shrink: 0; }
+    .stat-bar { flex: 1; height: 4px; background: #22222e; border-radius: 2px; overflow: hidden; }
+    .stat-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
+    #game { width: 100%; max-width: 640px; background: #13131a; border-radius: 16px; padding: 28px 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    #chapter { font-size: 11px; color: #e8c96e; letter-spacing: 2px; margin-bottom: 14px; }
+    #text { font-size: 15px; line-height: 1.85; white-space: pre-wrap; margin-bottom: 24px; min-height: 120px; }
+    #sbti { display: none; background: linear-gradient(135deg, #1a1a28, #20202e); border: 1px solid #e8c96e; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center; }
+    #sbti-type { font-size: 32px; font-weight: 700; color: #e8c96e; letter-spacing: 3px; }
+    #sbti-name { font-size: 14px; margin: 6px 0 4px; }
+    #sbti-desc { font-size: 12px; color: #6b6b7a; line-height: 1.6; }
+    .choice { background: #1c1c28; border: 1px solid #2a2a3a; border-radius: 10px; padding: 14px 16px; text-align: left; font-size: 14px; color: #e0e0e8; cursor: pointer; transition: all 0.18s; line-height: 1.5; margin-bottom: 8px; }
+    .choice:hover { background: #252536; border-color: #e8c96e; transform: translateX(3px); }
+    #choices { display: flex; flex-direction: column; }
+    #loading { text-align: center; padding: 40px; color: #6b6b7a; }
+    .sbti-tag { display: inline-block; font-size: 10px; background: #e8c96e; color: #000; padding: 2px 6px; border-radius: 4px; margin-bottom: 8px; }
+  </style>
 </head>
 <body>
-  <p>正在跳转… <a href="www/">点此进入游戏</a></p>
+<div id="stats"></div>
+<div id="game"><div id="loading">加载中...</div></div>
+
+<script>
+const STORY_URL = 'story.json';
+let story = {}, state = {};
+
+async function loadStory() {
+  const resp = await fetch(STORY_URL + '?t=' + Date.now());
+  story = await resp.json();
+  state = { node: story.game.start, stats: {}, tags: [], sbtiTypes: [] };
+  for (const [k, c] of Object.entries(story.stats)) state.stats[k] = c.start;
+  document.getElementById('loading').textContent = '';
+  render();
+}
+
+function render() {
+  const node = story.nodes[state.node];
+  if (!node) return;
+  let html = '';
+  if (node.text.match(/【第.+?】/)) html += '<div id="chapter">' + node.text.match(/【(.+?)】/)[1] + '</div>';
+  else if (state.node === 'prologue') html += '<div id="chapter">序章</div>';
+  html += '<div id="text">' + node.text + '</div>';
+  if (node.ending) {
+    const sk = node.sbti, s = story.sbti_types[sk];
+    html += '<div id="sbti"><div class="sbti-tag">你的AI焦虑类型</div><div id="sbti-type">' + sk + '</div><div id="sbti-name">' + s.name + '</div><div id="sbti-desc">' + s.desc + '</div></div>';
+    state.sbtiTypes.push(sk);
+  }
+  if (node.choices && node.choices.length > 0) {
+    html += '<div id="choices">';
+    for (const c of node.choices) {
+      if (c.requires && !c.requires.some(t => state.tags.includes(t))) continue;
+      const tag = c.tags ? c.tags.map(t => '<span style="font-size:10px;color:#888;margin-right:4px">#' + t + '</span>').join('') : '';
+      html += '<button class="choice" onclick="choose('' + c.next + '', ' + JSON.stringify(c.effects || {}) + ', ' + JSON.stringify(c.tags || []) + ')">' + tag + c.text + '</button>';
+    }
+    html += '</div>';
+  } else if (node.ending) {
+    html += '<div style="text-align:center;color:#6b6b7a;font-size:13px;margin-top:8px">— 完 —</div>';
+  }
+  let sHtml = '';
+  for (const [k, v] of Object.entries(state.stats)) {
+    const c = story.stats[k], pct = Math.round(v / c.max * 100);
+    const col = k === 'anxiety' ? (pct > 70 ? '#e85d5d' : pct > 40 ? '#e8c96e' : '#5de8a0') : '#5de8a0';
+    sHtml += '<div class="stat"><span class="stat-label">' + c.label + '</span><div class="stat-bar"><div class="stat-fill" style="width:' + pct + '%;background:' + col + '"></div></div><span style="font-size:11px;color:' + col + '">' + v + '</span></div>';
+  }
+  document.getElementById('stats').innerHTML = sHtml;
+  document.getElementById('stats').style.display = 'flex';
+  document.getElementById('game').innerHTML = html;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function choose(next, effects, tags) {
+  for (const [k, v] of Object.entries(effects)) {
+    if (story.stats[k]) state.stats[k] = Math.max(story.stats[k].min || 0, Math.min(story.stats[k].max || 100, state.stats[k] + v));
+  }
+  if (tags) state.tags.push(...tags);
+  state.node = next;
+  render();
+}
+
+loadStory();
+</script>
 </body>
 </html>
