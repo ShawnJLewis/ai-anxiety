@@ -23,7 +23,7 @@ jobs:
           tar -xzf android.tar.gz
           ls -la
 
-      - name: Create package.json with Capacitor deps
+      - name: Install Capacitor packages
         run: |
           cat > package.json << 'PKGEOF'
           {
@@ -37,14 +37,14 @@ jobs:
             }
           }
           PKGEOF
-
-      - name: Install all dependencies
-        run: |
           npm install --registry=https://registry.npmjs.org 2>&1 | tail -5
 
-      - name: Sync web assets to Android
+      - name: Copy web assets to Android
         run: |
-          npx cap copy android 2>&1
+          mkdir -p app/src/main/assets/public
+          cp index.html app/src/main/assets/public/
+          cp story.json app/src/main/assets/public/
+          ls app/src/main/assets/public/
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -66,7 +66,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: aianxiety-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
 
       - name: Create Release
         if: success()
@@ -74,7 +74,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const apkPath = 'android/app/build/outputs/apk/debug/app-debug.apk';
+            const apkPath = 'app/build/outputs/apk/debug/app-debug.apk';
             if (!fs.existsSync(apkPath)) { core.setFailed('APK not found'); return; }
             const apkData = fs.readFileSync(apkPath);
             let releaseId;
