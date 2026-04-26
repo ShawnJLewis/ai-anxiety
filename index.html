@@ -36,12 +36,28 @@ const STORY_URL = 'story.json';
 let story = {}, state = {};
 
 async function loadStory() {
-  const resp = await fetch(STORY_URL + '?v=2\&t=' + Date.now());
-  try { story = await resp.json(); } catch(e) { document.getElementById('loading').textContent = '加载失败: ' + e; };
-  state = { node: story.game.start, stats: {}, tags: [], sbtiTypes: [] };
-  for (const [k, c] of Object.entries(story.stats)) state.stats[k] = c.start;
-  document.getElementById('loading').textContent = '';
-  render();
+  const retry = async (n) => {
+    try {
+      const r = await fetch('story.json?v=3&t=' + Date.now());
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      if (!data.nodes || !data.stats) throw new Error('Invalid data');
+      story = data;
+      state = { node: story.game.start, stats: {}, tags: [], sbtiTypes: [] };
+      for (const [k, c] of Object.entries(story.stats)) state.stats[k] = c.start;
+      document.getElementById('loading').textContent = '';
+      render();
+    } catch(e) {
+      if (n > 1) {
+        document.getElementById('loading').textContent = '加载失败，重试... (' + (4-n) + ')';
+        await new Promise(r => setTimeout(r, 2000));
+        return retry(n-1);
+      }
+      document.getElementById('loading').textContent = '加载失败，请刷新';
+      console.error(e);
+    }
+  };
+  retry(3);
 }
 
 function render() {
