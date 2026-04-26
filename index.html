@@ -36,8 +36,8 @@ const STORY_URL = 'story.json';
 let story = {}, state = {};
 
 async function loadStory() {
-  const resp = await fetch(STORY_URL + '?t=' + Date.now());
-  story = await resp.json();
+  const resp = await fetch(STORY_URL + '?v=2\&t=' + Date.now());
+  try { story = await resp.json(); } catch(e) { document.getElementById('loading').textContent = '加载失败: ' + e; };
   state = { node: story.game.start, stats: {}, tags: [], sbtiTypes: [] };
   for (const [k, c] of Object.entries(story.stats)) state.stats[k] = c.start;
   document.getElementById('loading').textContent = '';
