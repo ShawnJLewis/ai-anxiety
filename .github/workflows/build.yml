@@ -40,8 +40,9 @@ jobs:
         run: |
           npm install --ignore-scripts --registry=https://registry.npmjs.org
 
-      - name: Sync Capacitor
+      - name: Add Android platform
         run: |
+          npx cap add android --no-interactive || true
           npx cap sync android
 
       - name: Set up JDK
@@ -64,7 +65,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: aianxiety-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Create Release
         if: success()
@@ -72,7 +73,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const apkPath = 'app/build/outputs/apk/debug/app-debug.apk';
+            const apkPath = 'android/app/build/outputs/apk/debug/app-debug.apk';
             if (!fs.existsSync(apkPath)) { core.setFailed('APK not found'); return; }
             const apkData = fs.readFileSync(apkPath);
             let releaseId;
