@@ -1,7 +1,7 @@
 {
   "appId": "com.shawnjlewis.aianxiety",
   "appName": "最后的简历",
-  "webDir": "www",
+  "webDir": ".",
   "server": {
     "androidScheme": "https"
   }
