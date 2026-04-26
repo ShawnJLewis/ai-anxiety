@@ -92,6 +92,15 @@ function render() { console.log("render called, node:", state.node, "choices:", 
   document.getElementById('stats').innerHTML = sHtml;
   document.getElementById('stats').style.display = 'flex';
   document.getElementById('game').innerHTML = html;
+  // Add event listeners via delegation
+  document.getElementById('choices').addEventListener('click', function(e) {
+    var btn = e.target.closest('.choice');
+    if (!btn) return;
+    var next = btn.getAttribute('data-next');
+    var effects = JSON.parse(decodeURIComponent(btn.getAttribute('data-effects') || '{}'));
+    var tags = JSON.parse(decodeURIComponent(btn.getAttribute('data-tags') || '[]'));
+    choose(next, effects, tags);
+  });
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
