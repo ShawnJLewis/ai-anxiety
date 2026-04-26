@@ -22,14 +22,12 @@ jobs:
         run: |
           tar -xzf android.tar.gz
           ls -la
-          ls -la app/
 
       - name: Copy web assets to Android
         run: |
           mkdir -p app/src/main/assets/public
           cp index.html app/src/main/assets/public/
           cp story.json app/src/main/assets/public/
-          ls app/src/main/assets/public/
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -43,7 +41,7 @@ jobs:
       - name: Build debug APK
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace 2>&1 | tail -80
+          ./gradlew assembleDebug --stacktrace 2>&1
         continue-on-error: true
 
       - name: Upload APK
