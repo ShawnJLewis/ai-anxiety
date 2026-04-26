@@ -23,9 +23,22 @@ jobs:
           tar -xzf android.tar.gz
           ls -la
 
-      - name: Install npm dependencies
+      - name: Create minimal package.json
         run: |
-          npm install --registry=https://registry.npmjs.org
+          cat > package.json << 'EOF'
+          {
+            "name": "ai-anxiety",
+            "version": "1.0.0",
+            "devDependencies": {
+              "@capacitor/cli": "^6.0.0",
+              "@capacitor/core": "^6.0.0"
+            }
+          }
+          EOF
+
+      - name: Install Capacitor
+        run: |
+          npm install --ignore-scripts --registry=https://registry.npmjs.org
 
       - name: Sync Capacitor
         run: |
@@ -42,7 +55,6 @@ jobs:
 
       - name: Build debug APK
         run: |
-          cd android
           chmod +x gradlew
           ./gradlew assembleDebug 2>&1
         continue-on-error: true
@@ -52,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: aianxiety-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
 
       - name: Create Release
         if: success()
@@ -60,7 +72,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const apkPath = 'android/app/build/outputs/apk/debug/app-debug.apk';
+            const apkPath = 'app/build/outputs/apk/debug/app-debug.apk';
             if (!fs.existsSync(apkPath)) { core.setFailed('APK not found'); return; }
             const apkData = fs.readFileSync(apkPath);
             let releaseId;
