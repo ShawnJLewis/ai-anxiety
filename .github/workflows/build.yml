@@ -23,26 +23,10 @@ jobs:
           tar -xzf android.tar.gz
           ls -la
 
-      - name: Create minimal package.json
-        run: |
-          cat > package.json << 'EOF'
-          {
-            "name": "ai-anxiety",
-            "version": "1.0.0",
-            "devDependencies": {
-              "@capacitor/cli": "^6.0.0",
-              "@capacitor/core": "^6.0.0"
-            }
-          }
-          EOF
-
-      - name: Install Capacitor
+      - name: Install Capacitor and Android platform
         run: |
           npm install --ignore-scripts --registry=https://registry.npmjs.org
-
-      - name: Add Android platform
-        run: |
-          echo "y" | npx cap add android || true
+          npm install @capacitor/android --ignore-scripts --registry=https://registry.npmjs.org
           npx cap sync android
 
       - name: Set up JDK
