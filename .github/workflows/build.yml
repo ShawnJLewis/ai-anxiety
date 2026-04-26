@@ -13,29 +13,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Verify android.tar.gz exists
+      - name: Verify game files exist
         run: |
-          ls -la android.tar.gz || echo "NOT FOUND"
-          tar -tzf android.tar.gz | head -5
+          ls -la index.html story.json android.tar.gz || echo "MISSING FILES"
 
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Extract Android project to root
+      - name: Extract Android project
         run: |
           tar -xzf android.tar.gz
           ls -la
 
-      - name: Install npm dependencies
+      - name: Copy web assets to Android
         run: |
-          rm -rf package-lock.json node_modules
-          npm install --ignore-scripts --registry=https://registry.npmjs.org
-
-      - name: Sync web assets
-        run: npx cap sync android
-        continue-on-error: true
+          mkdir -p android/app/src/main/assets/public
+          cp index.html android/app/src/main/assets/public/
+          cp story.json android/app/src/main/assets/public/
+          ls -la android/app/src/main/assets/public/
 
       - name: Set up JDK
         uses: actions/setup-java@v4
