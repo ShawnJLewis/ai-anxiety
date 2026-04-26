@@ -23,11 +23,28 @@ jobs:
           tar -xzf android.tar.gz
           ls -la
 
-      - name: Install Capacitor and Android platform
+      - name: Create package.json with Capacitor deps
         run: |
-          npm install --ignore-scripts --registry=https://registry.npmjs.org
-          npm install @capacitor/android --ignore-scripts --registry=https://registry.npmjs.org
-          npx cap sync android
+          cat > package.json << 'PKGEOF'
+          {
+            "name": "ai-anxiety",
+            "version": "1.0.0",
+            "dependencies": {
+              "@capacitor/android": "^6.0.0"
+            },
+            "devDependencies": {
+              "@capacitor/cli": "^6.0.0"
+            }
+          }
+          PKGEOF
+
+      - name: Install all dependencies
+        run: |
+          npm install --registry=https://registry.npmjs.org 2>&1 | tail -5
+
+      - name: Sync web assets to Android
+        run: |
+          npx cap copy android 2>&1
 
       - name: Set up JDK
         uses: actions/setup-java@v4
