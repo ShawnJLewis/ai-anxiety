@@ -60,7 +60,7 @@ async function loadStory() {
   retry(3);
 }
 
-function render() {
+function render() { console.log("render called, node:", state.node, "choices:", (story.nodes[state.node]?.choices?.length || 0));
   const node = story.nodes[state.node];
   if (!node) return;
   let html = '';
@@ -95,7 +95,7 @@ function render() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function choose(next, effects, tags) {
+function choose(next, effects, tags) { console.log("choose called:", next, effects);
   for (const [k, v] of Object.entries(effects)) {
     if (story.stats[k]) state.stats[k] = Math.max(story.stats[k].min || 0, Math.min(story.stats[k].max || 100, state.stats[k] + v));
   }
