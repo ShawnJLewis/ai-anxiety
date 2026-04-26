@@ -13,23 +13,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Verify android.tar.gz exists
+        run: |
+          ls -la android.tar.gz || echo "NOT FOUND"
+          ls -la android/ || echo "No android dir"
+
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Download Android base project
-        env:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract Android project
         run: |
-          curl -sL -H "Authorization: Bearer $TOKEN" \
-            "https://api.github.com/repos/${{ github.repository }}/contents/android.tar.gz" | \
-            python3 -c "import sys,json,base64,os; d=json.load(sys.stdin); open('android.tar.gz','wb').write(base64.b64decode(d['content']))"
           tar -xzf android.tar.gz
-          ls -la
-          echo "---Android dir---"
           ls -la android/
-          echo "Done"
 
       - name: Install npm dependencies
         run: |
@@ -54,11 +51,9 @@ jobs:
         run: |
           ls -la
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace 2>&1 | tail -30
-        env:
-          ANDROID_SDK_ROOT: /opt/android-sdk
+          ./gradlew assembleDebug --stacktrace 2>&1 | tail -40
 
-      - name: Upload APK artifact
+      - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
@@ -71,28 +66,27 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const path = require('path');
             const apkPath = 'android/app/build/outputs/apk/debug/app-debug.apk';
             if (!fs.existsSync(apkPath)) { core.setFailed('APK not found'); return; }
             const apkData = fs.readFileSync(apkPath);
-            const release = await github.rest.repos.getReleaseByTag({
-              owner: context.repo.owner, repo: context.repo.repo, tag: 'v1.0.0'
-            }).catch(() => null);
             let releaseId;
-            if (!release) {
+            try {
+              const release = await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner, repo: context.repo.repo, tag: 'v1.0.0'
+              });
+              releaseId = release.data.id;
+            } catch {
               const newRelease = await github.rest.repos.createRelease({
                 owner: context.repo.owner, repo: context.repo.repo,
                 tag_name: 'v1.0.0', name: '《最后的简历》v1.0.0',
-                body: '## 《最后的简历》\\n\\n**在线版**: https://shawnjlewis.github.io/ai-anxiety/\\n\\n**APK下载**: 点击本页面右侧的 APK artifact 下载',
+                body: '## 《最后的简历》\\n\\n**在线版**: https://shawnjlewis.github.io/ai-anxiety/\\n\\n**APK**: 点击右侧 Artifacts 下载',
                 draft: false
               });
               releaseId = newRelease.data.id;
-            } else {
-              releaseId = release.data.id;
             }
             await github.rest.repos.uploadReleaseAsset({
               owner: context.repo.owner, repo: context.repo.repo, release_id: releaseId,
-              name: 'chronicle-debug.apk',
+              name: 'ai-anxiety-debug.apk',
               data: Buffer.from(apkData).toString('base64'),
               headers: { 'Content-Type': 'application/vnd.android.package-archive', 'Content-Length': apkData.length }
             });
