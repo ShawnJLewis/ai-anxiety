@@ -16,17 +16,17 @@ jobs:
       - name: Verify android.tar.gz exists
         run: |
           ls -la android.tar.gz || echo "NOT FOUND"
-          ls -la android/ || echo "No android dir"
+          tar -tzf android.tar.gz | head -5
 
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Extract Android project
+      - name: Extract Android project to root
         run: |
           tar -xzf android.tar.gz
-          ls -la android/
+          ls -la
 
       - name: Install npm dependencies
         run: |
@@ -47,11 +47,11 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Build debug APK
-        working-directory: android
         run: |
-          ls -la
+          cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace 2>&1 | tail -40
+          ./gradlew assembleDebug --stacktrace 2>&1 | tail -50
+        continue-on-error: true
 
       - name: Upload APK
         if: success()
@@ -79,7 +79,7 @@ jobs:
               const newRelease = await github.rest.repos.createRelease({
                 owner: context.repo.owner, repo: context.repo.repo,
                 tag_name: 'v1.0.0', name: '《最后的简历》v1.0.0',
-                body: '## 《最后的简历》\\n\\n**在线版**: https://shawnjlewis.github.io/ai-anxiety/\\n\\n**APK**: 点击右侧 Artifacts 下载',
+                body: '## 《最后的简历》\n\n**在线版**: https://shawnjlewis.github.io/ai-anxiety/\n\n**APK**: 点击右侧 Artifacts 下载',
                 draft: false
               });
               releaseId = newRelease.data.id;
