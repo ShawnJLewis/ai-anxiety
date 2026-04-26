@@ -1,0 +1,58 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Download Android base project
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Download android.tar.gz from repo
+          curl -sL -H "Authorization: Bearer $TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/android.tar.gz" | \
+            python3 -c "import sys,json,base64,os; d=json.load(sys.stdin); open('android.tar.gz','wb').write(base64.b64decode(d['content']))"
+          tar -xzf android.tar.gz
+          rm android.tar.gz
+          echo "Android project ready"
+
+      - name: Install dependencies
+        run: |
+          rm -rf package-lock.json
+          npm install --ignore-scripts --registry=https://registry.npmjs.org
+
+      - name: Sync web assets
+        run: npx cap sync android
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aianxiety-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
