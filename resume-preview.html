@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>简历预览</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f0f0f0; display: flex; flex-direction: column; align-items: center; padding: 24px; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+  #resume-wrapper { width: 700px; background: #fff; box-shadow: 0 4px 24px rgba(0,0,0,0.12); }
+  #resume { padding: 40px 44px; }
+
+  /* ── Resume Typography ── */
+  .r-name { font-size: 28px; font-weight: 800; color: #1a1a2e; letter-spacing: 1px; margin-bottom: 6px; }
+  .r-title { font-size: 14px; color: #666; margin-bottom: 10px; }
+  .r-contact { font-size: 12px; color: #888; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
+  .r-contact span { margin-right: 14px; }
+  .r-section { margin-bottom: 18px; }
+  .r-section-title { font-size: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid #f0f0f0; }
+  .r-exp-item { margin-bottom: 12px; }
+  .r-exp-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; }
+  .r-exp-role { font-size: 14px; font-weight: 700; color: #222; }
+  .r-exp-period { font-size: 11px; color: #bbb; }
+  .r-exp-company { font-size: 12px; color: #555; margin-bottom: 3px; }
+  .r-exp-desc { font-size: 12px; color: #666; line-height: 1.6; }
+  .r-skills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .r-skill { font-size: 11px; background: #f5f5f5; color: #444; padding: 3px 10px; border-radius: 20px; border: 1px solid #e8e8e8; }
+  .r-quote { margin-top: 20px; padding: 16px 20px; background: #faf9ff; border-left: 3px solid #7c6af7; border-radius: 0 6px 6px 0; font-size: 13px; color: #555; font-style: italic; line-height: 1.7; }
+  .r-blank { height: 200px; display: flex; align-items: center; justify-content: center; }
+  .r-blank-quote { font-size: 22px; color: #888; font-style: italic; letter-spacing: 2px; text-align: center; }
+
+  /* ── Screenshot Button ── */
+  #btn-area { width: 700px; margin-top: 16px; display: flex; gap: 10px; align-items: center; }
+  #btn-save { background: #7c6af7; color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: inherit; }
+  #btn-save:hover { background: #6a59e0; }
+  #status { font-size: 12px; color: #888; margin-left: 8px; }
+
+  /* Print-friendly */
+  @media print { body { background: #fff; padding: 0; } #btn-area { display: none; } #resume-wrapper { box-shadow: none; } }
+</style>
+</head>
+<body>
+
+<div id="resume-wrapper">
+  <div id="resume">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<div id="btn-area">
+  <button id="btn-save">📥 保存为图片</button>
+  <span id="status"></span>
+</div>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+// ── Resume data (filled from game story node or defaults) ────────
+const RESUME_DATA = {
+  name: "李想的",
+  title: "AI 提示词工程师 · 幸存者",
+  contact: "13800138000 · lixiang@example.com · 杭州",
+  experience: [
+    {
+      company: "你",
+      role: "AI 管理者",
+      period: "2024 – 至今",
+      desc: "用 AI 处理一切重复性工作。建立了完整的工作流程管理体系，实现了 80% 日常事务自动化。"
+    },
+    {
+      company: "某中型科技公司",
+      role: "AI 应用顾问",
+      period: "2023 – 2024",
+      desc: "为企业引入 AI 工具链，优化文案生产流程，效率提升 40%。"
+    }
+  ],
+  skills: ["GPT-4 提示词工程", "AI 工作流设计", "Midjourney 图像生成", "Claude AI 深度使用"],
+  quote: "不是被替代的那个，是管理 AI 的那个。",
+  blank: false
+};
+
+function renderResume(data) {
+  const el = document.getElementById('resume');
+  if (data.blank) {
+    el.innerHTML = '<div class="r-blank"><div class="r-blank-quote">"' + esc(data.quote || '') + '"</div></div>';
+    return;
+  }
+  let expHtml = '';
+  for (const x of data.experience) {
+    expHtml += '<div class="r-exp-item">' +
+      '<div class="r-exp-header"><span class="r-exp-role">' + esc(x.role) + '</span><span class="r-exp-period">' + esc(x.period) + '</span></div>' +
+      '<div class="r-exp-company">' + esc(x.company) + '</div>' +
+      '<div class="r-exp-desc">' + esc(x.desc) + '</div></div>';
+  }
+  let skHtml = '';
+  for (const s of data.skills) skHtml += '<span class="r-skill">' + esc(s) + '</span>';
+  let h = '<div class="r-name">' + esc(data.name) + '</div>';
+  h += '<div class="r-title">' + esc(data.title) + '</div>';
+  h += '<div class="r-contact"><span>📧 ' + esc(data.contact) + '</span></div>';
+  h += '<div class="r-section"><div class="r-section-title">工作经历</div>' + expHtml + '</div>';
+  h += '<div class="r-section"><div class="r-section-title">技能</div><div class="r-skills">' + skHtml + '</div></div>';
+  if (data.quote) h += '<div class="r-quote">"' + esc(data.quote) + '"</div>';
+  el.innerHTML = h;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Screenshot ───────────────────────────────────────────────────
+document.getElementById('btn-save').addEventListener('click', async function() {
+  const btn = document.getElementById('btn-save');
+  const status = document.getElementById('status');
+  btn.disabled = true;
+  btn.textContent = '生成中...';
+  status.textContent = '';
+
+  try {
+    const wrapper = document.getElementById('resume-wrapper');
+    const canvas = await html2canvas(wrapper, {
+      scale: 2,
+      backgroundColor: '#ffffff',
+      useCORS: true,
+      logging: false
+    });
+
+    const link = document.createElement('a');
+    link.download = '我的AI焦虑简历.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    status.textContent = '✓ 已保存';
+  } catch(e) {
+    status.textContent = '生成失败: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📥 保存为图片';
+  }
+});
+
+// ── Init ────────────────────────────────────────────────────────
+renderResume(RESUME_DATA);
+</script>
+</body>
+</html>
