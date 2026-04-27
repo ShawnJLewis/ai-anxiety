@@ -1,120 +1,128 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>最后的简历</title>
-  <!-- Built: 2026-04-26 -->
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #0a0a0f; color: #e0e0e8; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-    #stats { width: 100%; max-width: 640px; display: none; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-    .stat { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-    .stat-label { width: 70px; color: #6b6b7a; flex-shrink: 0; }
-    .stat-bar { flex: 1; height: 4px; background: #22222e; border-radius: 2px; overflow: hidden; }
-    .stat-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
-    #game { width: 100%; max-width: 640px; background: #13131a; border-radius: 16px; padding: 28px 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-    #chapter { font-size: 11px; color: #e8c96e; letter-spacing: 2px; margin-bottom: 14px; }
-    #text { font-size: 15px; line-height: 1.85; white-space: pre-wrap; margin-bottom: 24px; min-height: 120px; }
-    #sbti { display: none; background: linear-gradient(135deg, #1a1a28, #20202e); border: 1px solid #e8c96e; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center; }
-    #sbti-type { font-size: 32px; font-weight: 700; color: #e8c96e; letter-spacing: 3px; }
-    #sbti-name { font-size: 14px; margin: 6px 0 4px; }
-    #sbti-desc { font-size: 12px; color: #6b6b7a; line-height: 1.6; }
-    .choice { background: #1c1c28; border: 1px solid #2a2a3a; border-radius: 10px; padding: 14px 16px; text-align: left; font-size: 14px; color: #e0e0e8; cursor: pointer; transition: all 0.18s; line-height: 1.5; margin-bottom: 8px; }
-    .choice:hover { background: #252536; border-color: #e8c96e; transform: translateX(3px); }
-    #choices { display: flex; flex-direction: column; }
-    #loading { text-align: center; padding: 40px; color: #6b6b7a; }
-    .sbti-tag { display: inline-block; font-size: 10px; background: #e8c96e; color: #000; padding: 2px 6px; border-radius: 4px; margin-bottom: 8px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最后的简历 - Inky版本</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0f; color: #e0e0e0; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; min-height: 100vh; display: flex; justify-content: center; padding: 40px 20px; }
+  #game { max-width: 640px; width: 100%; }
+  #story-text { font-size: 17px; line-height: 1.9; margin-bottom: 28px; white-space: pre-wrap; }
+  .line { margin-bottom: 6px; }
+  .ending { color: #f0c040; font-weight: bold; font-size: 15px; margin-top: 12px; }
+  #choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .choice {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 13px 18px;
+    font-size: 16px;
+    color: #d0d0d0;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s, border-color 0.15s;
+    line-height: 1.5;
+  }
+  .choice:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
+  .choice:active { background: rgba(255,255,255,0.18); }
+  #restart {
+    display: none;
+    margin-top: 24px;
+    background: rgba(240,192,64,0.15);
+    border: 1px solid rgba(240,192,64,0.4);
+    border-radius: 8px;
+    padding: 11px 22px;
+    font-size: 15px;
+    color: #f0c040;
+    cursor: pointer;
+  }
+  #restart:hover { background: rgba(240,192,64,0.25); }
+  #loading { color: #666; font-size: 14px; margin-bottom: 20px; }
+  .fade-in { animation: fadein 0.3s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+</style>
 </head>
 <body>
-<div id="stats"></div>
-<div id="game"><div id="loading">加载中...</div></div>
+<div id="game">
+  <div id="loading">正在编译故事脚本...</div>
+  <div id="story-text"></div>
+  <div id="choices"></div>
+  <button id="restart" onclick="restartGame()">重新开始</button>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/inkjs@2.4.0/dist/ink-es6.js"></script>
 <script>
-const STORY_URL = 'story.json';
-let story = {}, state = {};
+// story.ink file - loaded inline via compilation
+const storySource = `
+INCLUDE story.ink
+`;
 
-async function loadStory() {
-  const retry = async (n) => {
-    try {
-      const r = await fetch('story.json?v=3&t=' + Date.now());
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      const data = await r.json();
-      if (!data.nodes || !data.stats) throw new Error('Invalid data');
-      story = data;
-      state = { node: story.game.start, stats: {}, tags: [], sbtiTypes: [] };
-      for (const [k, c] of Object.entries(story.stats)) state.stats[k] = c.start;
-      document.getElementById('loading').textContent = '';
-      render();
-    } catch(e) {
-      if (n > 1) {
-        document.getElementById('loading').textContent = '加载失败，重试... (' + (4-n) + ')';
-        await new Promise(r => setTimeout(r, 2000));
-        return retry(n-1);
-      }
-      document.getElementById('loading').textContent = '加载失败，请刷新';
-      console.error(e);
-    }
-  };
-  retry(3);
+let story = null;
+let paragraphIndex = 0;
+
+function onReady() {
+  document.getElementById('loading').style.display = 'none';
+  continueStory(true);
 }
 
-function render() { console.log("render called, node:", state.node, "choices:", (story.nodes[state.node]?.choices?.length || 0));
-  const node = story.nodes[state.node];
-  if (!node) return;
-  let html = '';
-  if (node.text.match(/【第.+?】/)) html += '<div id="chapter">' + node.text.match(/【(.+?)】/)[1] + '</div>';
-  else if (state.node === 'prologue') html += '<div id="chapter">序章</div>';
-  html += '<div id="text">' + node.text + '</div>';
-  if (node.ending) {
-    const sk = node.sbti, s = story.sbti_types[sk];
-    html += '<div id="sbti"><div class="sbti-tag">你的AI焦虑类型</div><div id="sbti-type">' + sk + '</div><div id="sbti-name">' + s.name + '</div><div id="sbti-desc">' + s.desc + '</div></div>';
-    state.sbtiTypes.push(sk);
+function continueStory(firstTime) {
+  const textEl = document.getElementById('story-text');
+  const choicesEl = document.getElementById('choices');
+  
+  // Collect all available paragraphs
+  while (story.canContinue) {
+    const p = story.Continue();
+    paragraphIndex++;
+    const div = document.createElement('div');
+    div.className = 'line fade-in';
+    div.textContent = p;
+    textEl.appendChild(div);
   }
-  if (node.choices && node.choices.length > 0) {
-    html += '<div id="choices">';
-    for (const c of node.choices) {
-      if (c.requires && !c.requires.some(t => state.tags.includes(t))) continue;
-      const tag = c.tags ? c.tags.map(t => '<span style="font-size:10px;color:#888;margin-right:4px">#' + t + '</span>').join('') : '';
-      var _efx = JSON.stringify(c.effects || {});
-var _tgs = JSON.stringify(c.tags || []);
-html += '<button class="choice" data-next="' + c.next + '" data-effects="' + encodeURIComponent(JSON.stringify(c.effects || {})) + '" data-tags="' + encodeURIComponent(JSON.stringify(c.tags || [])) + '">' + tag + c.text + '</button>';
-    }
-    html += '</div>';
-  } else if (node.ending) {
-    html += '<div style="text-align:center;color:#6b6b7a;font-size:13px;margin-top:8px">— 完 —</div>';
+  
+  // Show choices
+  choicesEl.innerHTML = '';
+  const choices = story.currentChoices;
+  if (choices && choices.length > 0) {
+    choices.forEach((choice, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice';
+      btn.textContent = choice.text;
+      btn.onclick = () => {
+        story.ChooseChoiceIndex(i);
+        continueStory(false);
+      };
+      choicesEl.appendChild(btn);
+    });
+  } else {
+    // End of story
+    document.getElementById('restart').style.display = 'block';
   }
-  let sHtml = '';
-  for (const [k, v] of Object.entries(state.stats)) {
-    const c = story.stats[k], pct = Math.round(v / c.max * 100);
-    const col = k === 'anxiety' ? (pct > 70 ? '#e85d5d' : pct > 40 ? '#e8c96e' : '#5de8a0') : '#5de8a0';
-    sHtml += '<div class="stat"><span class="stat-label">' + c.label + '</span><div class="stat-bar"><div class="stat-fill" style="width:' + pct + '%;background:' + col + '"></div></div><span style="font-size:11px;color:' + col + '">' + v + '</span></div>';
-  }
-  document.getElementById('stats').innerHTML = sHtml;
-  document.getElementById('stats').style.display = 'flex';
-  document.getElementById('game').innerHTML = html;
-  document.getElementById('choices').onclick = function(e) {
-    var btn = e.target.closest('.choice');
-    if (!btn) return;
-    var n = btn.getAttribute('data-next');
-    var ef = btn.getAttribute('data-effects');
-    var tg = btn.getAttribute('data-tags');
-    choose(n, ef ? JSON.parse(decodeURIComponent(ef)) : {}, tg ? JSON.parse(decodeURIComponent(tg)) : []);
-  };
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
-function choose(next, effects, tags) { console.log("choose called:", next, effects);
-  for (const [k, v] of Object.entries(effects)) {
-    if (story.stats[k]) state.stats[k] = Math.max(story.stats[k].min || 0, Math.min(story.stats[k].max || 100, state.stats[k] + v));
-  }
-  if (tags) state.tags.push(...tags);
-  state.node = next;
-  render();
+function restartGame() {
+  document.getElementById('story-text').innerHTML = '';
+  document.getElementById('choices').innerHTML = '';
+  document.getElementById('restart').style.display = 'none';
+  story.ResetHistory();
+  continueStory(true);
 }
 
-loadStory();
+// Load and compile the ink file
+fetch('story.ink')
+  .then(r => {
+    if (!r.ok) throw new Error('找不到 story.ink，请确保 story.ink 在同一目录下');
+    return r.text();
+  })
+  .then(inkSource => {
+    story = new inkjs.Story(inkSource);
+    onReady();
+  })
+  .catch(err => {
+    document.getElementById('loading').textContent = '加载失败: ' + err.message;
+  });
 </script>
 </body>
 </html>
