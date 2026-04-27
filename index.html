@@ -6,407 +6,306 @@
 <title>最后的简历</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #0a0a0f; color: #ddd; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; min-height: 100vh; padding: 0 0 80px 0; }
-  #container { max-width: 640px; margin: 0 auto; padding: 24px 20px 0; }
+  body { background: #0a0a0f; color: #ddd; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; min-height: 100vh; padding: 0 0 60px; }
+  #container { max-width: 640px; margin: 0 auto; padding: 20px 20px 0; }
 
-  /* Stats bar */
-  #stats-bar {
-    position: fixed; top: 0; left: 0; right: 0;
-    background: #0f0f18;
-    border-bottom: 1px solid #222;
-    z-index: 100;
-    display: flex;
-    justify-content: center;
-    padding: 6px 16px;
-    gap: 20px;
-    font-size: 12px;
+  #stats {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,15,0.95); border-bottom: 1px solid #1e1e2a;
+    display: flex; justify-content: center; gap: 18px;
+    padding: 7px 16px; font-size: 11px;
   }
-  .stat { display: flex; align-items: center; gap: 5px; }
-  .stat-label { color: #888; }
-  .stat-bar-wrap { width: 60px; height: 6px; background: #222; border-radius: 3px; overflow: hidden; }
-  .stat-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
-  #anxiety-fill { background: #ff6060; }
-  #competitiveness-fill { background: #60c0ff; }
-  #aitrust-fill { background: #60ff90; }
-  #wallet-fill { background: #f0c040; }
-  .stat-val { color: #ccc; min-width: 28px; text-align: right; }
+  .st { display: flex; align-items: center; gap: 5px; color: #666; }
+  .st-bar { width: 50px; height: 5px; background: #1a1a22; border-radius: 3px; overflow: hidden; }
+  .st-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+  #bar-anx { background: #ff5555; }
+  #bar-comp { background: #4488ff; }
+  #bar-trust { background: #44dd88; }
+  #bar-wallet { background: #f0c040; }
+  .st-val { color: #aaa; min-width: 24px; text-align: right; }
 
-  /* Story area */
-  #story-text { font-size: 17px; line-height: 2; margin-bottom: 24px; padding-top: 40px; }
-  .line { margin-bottom: 4px; opacity: 0; transform: translateY(6px); animation: linein 0.3s ease forwards; }
-  @keyframes linein { to { opacity: 1; transform: translateY(0); } }
-  .ending-tag { color: #f0c040; font-weight: bold; font-size: 14px; margin-top: 16px; display: inline-block; }
-  .chapter-tag { color: #888; font-size: 13px; margin-bottom: 16px; display: block; }
-  .her-note { color: #888; font-size: 13px; font-style: italic; border-left: 2px solid #444; padding-left: 10px; margin: 8px 0; }
+  #story { padding-top: 36px; min-height: 60vh; margin-bottom: 20px; font-size: 17px; line-height: 2; }
+  .ln { margin-bottom: 3px; opacity: 0; animation: fadeup 0.25s ease forwards; }
+  @keyframes fadeup { to { opacity: 1; transform: translateY(0); } transform: translateY(5px); }
+  .ch-tag { color: #666; font-size: 13px; margin: 12px 0 8px; display: block; }
+  .ending-box { background: rgba(240,192,64,0.08); border: 1px solid rgba(240,192,64,0.25); border-radius: 12px; padding: 18px; margin-top: 16px; }
+  .sbti-type { font-size: 32px; font-weight: bold; color: #f0c040; }
+  .sbti-name { font-size: 16px; color: #ccc; margin: 4px 0 10px; }
+  .sbti-desc { font-size: 14px; color: #888; line-height: 1.6; }
+  .sbti-quote { font-size: 13px; color: #666; margin-top: 10px; font-style: italic; }
 
-  /* Choices */
-  #choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
-  .choice {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 14px 18px;
-    font-size: 16px;
-    color: #ccc;
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.15s, border-color 0.15s, transform 0.1s;
-    line-height: 1.6;
-    opacity: 0; animation: choicein 0.3s ease forwards;
+  #choices { display: flex; flex-direction: column; gap: 9px; margin-top: 4px; }
+  .btn {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 10px; padding: 13px 17px; font-size: 16px; color: #ccc;
+    cursor: pointer; text-align: left; transition: background 0.12s, border-color 0.12s;
+    opacity: 0; animation: fadein 0.2s ease forwards; font-family: inherit;
+    line-height: 1.5;
   }
-  .choice:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25); }
-  .choice:active { transform: scale(0.99); }
-  @keyframes choicein { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
-  .choice-stat { font-size: 11px; color: #666; margin-top: 4px; }
+  .btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); }
+  .btn:active { transform: scale(0.99); }
+  @keyframes fadein { to { opacity: 1; } }
+  .stat-hint { font-size: 11px; color: #555; margin-top: 3px; display: block; }
 
-  /* Restart button */
+  #load-msg { color: #444; font-size: 13px; padding: 10px 0; }
   #restart {
-    display: none;
-    margin: 24px auto 0;
-    background: rgba(240,192,64,0.1);
-    border: 1px solid rgba(240,192,64,0.35);
-    border-radius: 8px;
-    padding: 12px 28px;
-    font-size: 15px;
-    color: #f0c040;
-    cursor: pointer;
+    display: none; margin: 20px auto 0;
+    background: rgba(240,192,64,0.1); border: 1px solid rgba(240,192,64,0.3);
+    border-radius: 8px; padding: 11px 26px; font-size: 15px; color: #f0c040; cursor: pointer;
+    font-family: inherit;
   }
   #restart:hover { background: rgba(240,192,64,0.2); }
 
-  /* Loading */
-  #loading { color: #555; font-size: 14px; padding-top: 40px; text-align: center; }
-
-  /* SBTI result */
-  #sbti-result { display: none; background: rgba(240,192,64,0.08); border: 1px solid rgba(240,192,64,0.3); border-radius: 12px; padding: 20px; margin-top: 20px; }
-  #sbti-type { font-size: 28px; font-weight: bold; color: #f0c040; margin-bottom: 8px; }
-  #sbti-name { font-size: 16px; color: #ccc; margin-bottom: 12px; }
-  #sbti-desc { font-size: 14px; color: #888; line-height: 1.6; }
-  #sbti-quote { font-size: 13px; color: #666; margin-top: 12px; font-style: italic; }
-
-  /* Progress indicator */
-  #progress { position: fixed; bottom: 0; left: 0; right: 0; height: 3px; background: #1a1a24; }
-  #progress-fill { height: 100%; background: #f0c040; width: 0%; transition: width 0.3s; }
+  #progress { position: fixed; bottom: 0; left: 0; right: 0; height: 2px; background: #111; }
+  #prog-fill { height: 100%; background: #f0c040; width: 0%; transition: width 0.4s; }
 </style>
 </head>
 <body>
 
-<div id="stats-bar">
-  <div class="stat">
-    <span class="stat-label">焦虑</span>
-    <div class="stat-bar-wrap"><div id="anxiety-fill" class="stat-bar-fill" style="width:10%"></div></div>
-    <span id="anxiety-val" class="stat-val">10</span>
-  </div>
-  <div class="stat">
-    <span class="stat-label">竞争力</span>
-    <div class="stat-bar-wrap"><div id="competitiveness-fill" class="stat-bar-fill" style="width:50%"></div></div>
-    <span id="competitiveness-val" class="stat-val">50</span>
-  </div>
-  <div class="stat">
-    <span class="stat-label">AI信任</span>
-    <div class="stat-bar-wrap"><div id="aitrust-fill" class="stat-bar-fill" style="width:0%"></div></div>
-    <span id="aitrust-val" class="stat-val">0</span>
-  </div>
-  <div class="stat">
-    <span class="stat-label">钱包</span>
-    <div class="stat-bar-wrap"><div id="wallet-fill" class="stat-bar-fill" style="width:50%"></div></div>
-    <span id="wallet-val" class="stat-val">50</span>
-  </div>
+<div id="stats">
+  <div class="st">焦虑<span class="st-bar"><span id="bar-anx" class="st-fill" style="width:10%"></span></span><span id="val-anx" class="st-val">10</span></div>
+  <div class="st">竞争力<span class="st-bar"><span id="bar-comp" class="st-fill" style="width:50%"></span></span><span id="val-comp" class="st-val">50</span></div>
+  <div class="st">AI信任<span class="st-bar"><span id="bar-trust" class="st-fill" style="width:0%"></span></span><span id="val-trust" class="st-val">0</span></div>
+  <div class="st">钱包<span class="st-bar"><span id="bar-wallet" class="st-fill" style="width:50%"></span></span><span id="val-wallet" class="st-val">50</span></div>
 </div>
 
 <div id="container">
-  <div id="loading">正在加载故事...</div>
-  <div id="story-text"></div>
-  <div id="sbti-result">
-    <div id="sbti-type"></div>
-    <div id="sbti-name"></div>
-    <div id="sbti-desc"></div>
-    <div id="sbti-quote"></div>
-  </div>
+  <div id="load-msg">正在加载故事...</div>
+  <div id="story"></div>
   <div id="choices"></div>
   <button id="restart" onclick="restartGame()">重新开始</button>
 </div>
 
-<div id="progress"><div id="progress-fill"></div></div>
+<div id="progress"><div id="prog-fill"></div></div>
 
-<script src="https://cdn.jsdelivr.net/npm/inkjs@2.4.0/dist/ink-es6.js"></script>
 <script>
-// ─── Dynamic chapter loader ───────────────────────────────────────────────────────
-// Chapter files to load in order. Each file has nodes that get merged into the story.
-const CHAPTER_FILES = [
-  'ch0_prologue.json',  // prologue + ch1_pre + ch1_calm + ...
-  'ch1.json',           // ch1_try + ch1_fortune + ... + ch2_gate
-  'ch2.json',           // ch2 nodes + ch3_gate
-  'ch3.json',           // ch3 nodes + ch4_gate
-  'ch4.json',           // ch4 + endings
-  'cloud.json',         // yun/her nodes (loaded on demand)
-];
+// ─── Story Engine (Plan A: Pure JSON) ─────────────────────────────────────────
 
-// Nodes that trigger a chapter load
-const CHAPTER_GATES = {
-  'ch2': 'ch2.json',
-  'ch3': 'ch3.json',
-  'ch4': 'ch4.json',
-};
-
-const ENDING_NODES = new Set([
-  'ch1_quit', 'ch2_offline', 'end_cyber_shepherd', 'end_symbiosis',
-  'end_lazy', 'end_collapse', 'end_handyman', 'end_mirror', 'yun_special',
-  'end_ai_newborn', 'end_classical_scholar', 'end_system_person',
-  'end_academic_cyborg', 'end_last_humanist', 'end_digital_nomad',
-  'end_ai_addict', 'end_collab_confusion', 'end_digital_saltedfish',
-  'end_relationshipist', 'end_last_artist', 'end_lost',
+const ENDINGS = new Set([
+  'ch1_quit','ch2_offline','ch2_quit',
+  'end_cyber_shepherd','end_symbiosis','end_lazy','end_collapse',
+  'end_handyman','end_mirror','yun_special',
+  'end_ai_newborn','end_classical_scholar','end_system_person',
+  'end_academic_cyborg','end_last_humanist','end_digital_nomad',
+  'end_ai_addict','end_collab_confusion','end_digital_saltedfish',
+  'end_relationshipist','end_last_artist','end_lost',
 ]);
 
-const SBTI_MAP = {
-  'end_cyber_shepherd':  { type: 'SHEP', name: '赛博牧羊人', desc: '你不是被替代的那个，是管理AI的那个。', quote: '"管它AI洪水滔天，我只管我的羊。"' },
-  'end_symbiosis':       { type: 'SYMB', name: '共生体', desc: 'AI是工具，你是目的。不多不少，刚刚好。', quote: '"我借用AI的力量，AI借我的方向。"' },
-  'end_lazy':            { type: 'LAZY', name: '纯躺一代', desc: 'AI养我我骄傲。不焦虑，也不兴奋。', quote: '"就这样吧。"' },
-  'end_collapse':        { type: 'VOID', name: '空白简历', desc: '世界那么大，我想去看看。', quote: '"他们都在卷，只有我在发呆。"' },
-  'end_handyman':        { type: 'HAND', name: '手艺人', desc: '身体性的，不可自动化的，独一无二的。', quote: '"摸到皮肤的温度，是AI永远学不会的事。"' },
-  'end_mirror':          { type: 'SEER', name: '看透的人', desc: '知道自己是什么，AI是什么。', quote: '"镜子里的不是AI，是你自己。"' },
-  'yun_special':         { type: 'LOVE', name: '给云的信', desc: '这不是AI的胜利，这是孤独的胜利。', quote: '"什么是你还愿意做的？这是你给自己的信。"' },
-  'end_ai_newborn':      { type: 'BORN', name: 'AI新人类', desc: '在AI时代找到了自己的竞争力。', quote: '"两条腿走路，AI和本行都不落下。"' },
-  'end_classical_scholar':{ type: 'CLAS', name: '古典学者', desc: '代价慢，但守住初心。', quote: '"他们都在跑，我选择走。"' },
-  'end_system_person':    { type: 'SYSY', name: '系统内的人', desc: '体制内，AI焦虑消失。', quote: '"铁饭碗在手，AI焦虑没有。"' },
-  'end_academic_cyborg':  { type: 'CYBG', name: '学术赛博格', desc: '留在学术圈，AI焦虑更深，但更有战斗力。', quote: '"用AI杀AI，用魔法打败魔法。"' },
-  'end_last_humanist':   { type: 'HUMN', name: '最后的文科生', desc: '转向AI无法替代的领域。', quote: '"AI懂逻辑，但不懂痛感。"' },
-  'end_digital_nomad':   { type: 'NOMD', name: '数字游民', desc: '回家gap，世界安静了，你变了。', quote: '"不是逃避，是换个坐标系看自己。"' },
-  'end_ai_addict':       { type: 'ADD1', name: 'AI成瘾者', desc: 'AI成了生活中心，反而更焦虑。', quote: '"离了AI我什么都做不了。真的。"' },
-  'end_collab_confusion':{ type: 'CONF', name: '协作的困惑', desc: '合作愉快，但这是我做的吗？', quote: '"AI帮我做的，算我的作品吗？" ' },
-  'end_digital_saltedfish': { type: 'SALT', name: '数字咸鱼', desc: '完全躺平，靠AI养活自己。荒谬但诚实。', quote: '"AI能做的都做，我只负责消费。"' },
-  'end_relationshipist':  { type: 'RELT', name: '关系主义者', desc: '深度人际联结无法被替代。', quote: '"AI不会抱你，不会沉默着陪你。"' },
-  'end_last_artist':     { type: 'ARTY', name: '最后的艺术家', desc: '纯粹的艺术表达。', quote: '"AI可以画得像，但不会画痛。"' },
-  'end_lost':            { type: 'LOST', name: '迷失', desc: '完全转行，重新开始。', quote: '"我不知道自己想要什么，但我知道自己不想要什么。"' },
-  'ch1_quit':            { type: 'QUIT', name: '提前退出者', desc: '不是失败，是选择。', quote: '"换个方向，也是一种到达。"' },
-  'ch2_offline':         { type: 'OFFL', name: '离线生活型', desc: '你离开了，但世界没有停下来。', quote: '"我离线了，世界继续运转，OK的。"' },
+const SBTI = {
+  'ch1_quit':      { t:'QUIT', n:'提前退出者', d:'不是失败，是选择。', q:'"换个方向，也是一种到达。"' },
+  'ch2_offline':   { t:'OFFL', n:'离线生活型', d:'你离开了，但世界没有停下来。', q:'"我离线了，世界继续运转，OK的。"' },
+  'end_cyber_shepherd':{ t:'SHEP', n:'赛博牧羊人', d:'你不是被替代的那个，是管理AI的那个。', q:'"管它AI洪水滔天，我只管我的羊。"' },
+  'end_symbiosis': { t:'SYMB', n:'共生体', d:'AI是工具，你是目的。不多不少，刚刚好。', q:'"我借用AI的力量，AI借我的方向。"' },
+  'end_lazy':      { t:'LAZY', n:'纯躺一代', d:'AI养我我骄傲。不焦虑，也不兴奋。', q:'"就这样吧。"' },
+  'end_collapse':  { t:'VOID', n:'空白简历', d:'世界那么大，我想去看看。', q:'"他们都在卷，只有我在发呆。"' },
+  'end_handyman':  { t:'HAND', n:'手艺人', d:'身体性的，不可自动化的，独一无二的。', q:'"摸到皮肤的温度，是AI永远学不会的事。"' },
+  'end_mirror':    { t:'SEER', n:'看透的人', d:'知道自己是什么，AI是什么。', q:'"镜子里的不是AI，是你自己。"' },
+  'yun_special':   { t:'LOVE', n:'给云的信', d:'这不是AI的胜利，这是孤独的胜利。', q:'"什么是你还愿意做的？这是你给自己的信。"' },
+  'end_ai_newborn':{ t:'BORN', n:'AI新人类', d:'在AI时代找到了自己的竞争力。', q:'"两条腿走路，AI和本行都不落下。"' },
+  'end_classical_scholar':{ t:'CLAS', n:'古典学者', d:'代价慢，但守住初心。', q:'"他们都在跑，我选择走。"' },
+  'end_system_person':{ t:'SYSY', n:'系统内的人', d:'体制内，AI焦虑消失。', q:'"铁饭碗在手，AI焦虑没有。"' },
+  'end_academic_cyborg':{ t:'CYBG', n:'学术赛博格', d:'留在学术圈，AI焦虑更深，但更有战斗力。', q:'"用AI杀AI，用魔法打败魔法。"' },
+  'end_last_humanist':{ t:'HUMN', n:'最后的文科生', d:'转向AI无法替代的领域。', q:'"AI懂逻辑，但不懂痛感。"' },
+  'end_digital_nomad':{ t:'NOMD', n:'数字游民', d:'回家gap，世界安静了，你变了。', q:'"不是逃避，是换个坐标系看自己。"' },
+  'end_ai_addict': { t:'ADD1', n:'AI成瘾者', d:'AI成了生活中心，反而更焦虑。', q:'"离了AI我什么都做不了。真的。"' },
+  'end_collab_confusion':{ t:'CONF', n:'协作的困惑', d:'合作愉快，但这是我做的吗？', q:'"AI帮我做的，算我的作品吗？"' },
+  'end_digital_saltedfish':{ t:'SALT', n:'数字咸鱼', d:'完全躺平，靠AI养活自己。荒谬但诚实。', q:'"AI能做的都做，我只负责消费。"' },
+  'end_relationshipist':{ t:'RELT', n:'关系主义者', d:'深度人际联结无法被替代。', q:'"AI不会抱你，不会沉默着陪你。"' },
+  'end_last_artist':{ t:'ARTY', n:'最后的艺术家', d:'纯粹的艺术表达。', q:'"AI可以画得像，但不会画痛。"' },
+  'end_lost':      { t:'LOST', n:'迷失', d:'完全转行，重新开始。', q:'"我不知道自己想要什么，但我知道自己不想要什么。"' },
 };
 
-// ─── State ─────────────────────────────────────────────────────────────────────────
-let story = null;
-let loadedChapters = new Set();
-let statSnapshot = { anxiety: 10, competitiveness: 50, aiTrust: 0, wallet: 50 };
-let cloudUnlocked = false;
+const CHAPTER_FILES = ['ch1.json','ch2.json','ch3.json','ch4.json','cloud.json'];
+const CHAPTER_GATES = { 'ch1':true,'ch2':true,'ch3':true,'ch4':true };
+
+// ─── State ─────────────────────────────────────────────────────────────────
+let allNodes = {};
+let curNode = 'prologue';
+let stats = { anxiety:10, competitiveness:50, aiTrust:0, wallet:50 };
+let loadedChapters = new Set(['prologue']);
 let nodeCount = 0;
-const TOTAL_NODES = 50; // rough estimate for progress bar
+const TOTAL = 50;
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
-function init() {
-  fetch('story.json')
-    .then(r => { if (!r.ok) throw new Error('找不到 story.json'); return r.text(); })
-    .then(compileStory)
-    .catch(err => {
-      document.getElementById('loading').textContent = '加载失败: ' + err.message;
-    });
-}
-
-function compileStory(inkSource) {
+// ─── Init ───────────────────────────────────────────────────────────────────
+async function init() {
   try {
-    story = new inkjs.Story(inkSource);
-    story.onVariableChanged = onVariableChanged;
-    updateStatsDisplay();
-    loadChapter('ch0_prologue.json', () => {
-      document.getElementById('loading').style.display = 'none';
-      continueStory();
-    });
-  } catch (e) {
-    document.getElementById('loading').textContent = '编译失败: ' + e.message;
+    const r = await fetch('story.json');
+    if (!r.ok) throw new Error('找不到 story.json');
+    const data = await r.json();
+    Object.assign(allNodes, data.nodes);
+    document.getElementById('load-msg').style.display = 'none';
+    updateStats();
+    goNode('prologue');
+  } catch(e) {
+    document.getElementById('load-msg').textContent = '加载失败: ' + e.message;
   }
 }
 
-// ─── Variable change handler ─────────────────────────────────────────────────
-function onVariableChanged(name, newValue) {
-  if (name === 'anxiety') statSnapshot.anxiety = Math.max(0, Math.min(100, newValue));
-  if (name === 'competitiveness') statSnapshot.competitiveness = Math.max(0, Math.min(100, newValue));
-  if (name === 'aiTrust') statSnapshot.aiTrust = Math.max(0, Math.min(100, newValue));
-  if (name === 'wallet') statSnapshot.wallet = Math.max(0, Math.min(100, newValue));
-  if (name === 'has_ai_romance' && newValue === true) cloudUnlocked = true;
-  updateStatsDisplay();
+function updateStats() {
+  const { anxiety, competitiveness, aiTrust, wallet } = stats;
+  document.getElementById('bar-anx').style.width = anxiety + '%';
+  document.getElementById('val-anx').textContent = anxiety;
+  document.getElementById('bar-comp').style.width = competitiveness + '%';
+  document.getElementById('val-comp').textContent = competitiveness;
+  document.getElementById('bar-trust').style.width = aiTrust + '%';
+  document.getElementById('val-trust').textContent = aiTrust;
+  document.getElementById('bar-wallet').style.width = wallet + '%';
+  document.getElementById('val-wallet').textContent = wallet;
+  const pct = Math.min(100, (nodeCount / TOTAL) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
 }
 
-function updateStatsDisplay() {
-  document.getElementById('anxiety-fill').style.width = statSnapshot.anxiety + '%';
-  document.getElementById('anxiety-val').textContent = statSnapshot.anxiety;
-  document.getElementById('competitiveness-fill').style.width = statSnapshot.competitiveness + '%';
-  document.getElementById('competitiveness-val').textContent = statSnapshot.competitiveness;
-  document.getElementById('aitrust-fill').style.width = statSnapshot.aiTrust + '%';
-  document.getElementById('aitrust-val').textContent = statSnapshot.aiTrust;
-  document.getElementById('wallet-fill').style.width = statSnapshot.wallet + '%';
-  document.getElementById('wallet-val').textContent = statSnapshot.wallet;
-}
+function clamp(v, mn, mx) { return Math.max(mn, Math.min(mx, v)); }
 
-// ─── Dynamic chapter loading ───────────────────────────────────────────────────
-function loadChapter(filename, callback) {
-  if (loadedChapters.has(filename)) { callback && callback(); return; }
-  document.getElementById('loading').style.display = 'block';
-  document.getElementById('loading').textContent = '正在加载章节...';
-  fetch(filename)
-    .then(r => { if (!r.ok) throw new Error('找不到 ' + filename); return r.json(); })
-    .then(chapterData => {
-      // Merge nodes into story runtime (inkjs runtime patch)
-      mergeNodes(chapterData);
-      loadedChapters.add(filename);
-      document.getElementById('loading').style.display = 'none';
-      callback && callback();
-    })
-    .catch(err => {
-      console.warn('章节加载失败:', filename, err);
-      document.getElementById('loading').style.display = 'none';
-      callback && callback();
-    });
-}
-
-function mergeNodes(chapterData) {
-  // Patch inkjs story to include chapter nodes
-  // inkjs stores currentknotIndex, knotCount, etc. in runtime
-  // We add new knots to the story's knot variable tracking
-  if (!chapterData.knots) return;
-  const current = chapterData.knots;
-  for (const knotName in current) {
-    if (!story._knots) story._knots = {};
-    if (!story._knots.hasOwnProperty(knotName)) {
-      story._knots[knotName] = current[knotName];
-      story._variableKeys.push(knotName);
-    }
+function applyEffects(effects) {
+  if (!effects) return;
+  for (const [k, delta] of Object.entries(effects)) {
+    if (k in stats) stats[k] = clamp(stats[k] + delta, 0, 100);
   }
-  // Also patch if using newer inkjs
-  if (typeof story.bindExternalFunction === 'undefined') return;
+  updateStats();
 }
 
-// ─── Story continuation ────────────────────────────────────────────────────────
-function continueStory() {
-  const textEl = document.getElementById('story-text');
-  const choicesEl = document.getElementById('choices');
-  let didContinue = false;
+// ─── Render node ───────────────────────────────────────────────────────────
+function goNode(nodeId) {
+  nodeCount++;
+  curNode = nodeId;
+  const node = allNodes[nodeId];
+  if (!node) { showChoices([]); return; }
 
-  while (story.canContinue) {
-    const p = story.Continue();
-    nodeCount++;
-    updateProgress();
-    const div = document.createElement('div');
-    div.className = 'line';
-    const lastLine = p.trim();
-    // Detect chapter tags like 【第一章】
-    if (/^【/.test(lastLine)) {
-      div.className += ' chapter-tag';
-      div.textContent = lastLine;
-    } else if (/^===/.test(lastLine)) {
-      div.style.display = 'none'; // hide ===QUIT=== markers
+  const story = document.getElementById('story');
+  const lines = node.text.split('\n');
+
+  lines.forEach((line, i) => {
+    if (line.startsWith('【') && line.endsWith('】')) {
+      const el = document.createElement('span');
+      el.className = 'ch-tag';
+      el.textContent = line;
+      el.style.animationDelay = i * 0.05 + 's';
+      story.appendChild(el);
     } else {
-      div.textContent = p;
+      const el = document.createElement('div');
+      el.className = 'ln';
+      el.style.animationDelay = (i * 0.05) + 's';
+      el.textContent = line || '\u00a0';
+      story.appendChild(el);
     }
-    textEl.appendChild(div);
-    didContinue = true;
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-  }
+  });
 
-  // Check for ending
-  const tags = story.currentTags || [];
-  const currentKnot = story.currentKnot || '';
-  if (ENDING_NODES.has(currentKnot) || tags.includes('ending')) {
-    showEnding(currentKnot);
-    return;
-  }
+  // Apply entry effects
+  if (node.effects) applyEffects(node.effects);
 
-  // Show choices
-  choicesEl.innerHTML = '';
-  const choices = story.currentChoices;
-  if (choices && choices.length > 0) {
-    choices.forEach((choice, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'choice';
-      btn.style.animationDelay = (i * 0.08) + 's';
-      // Show choice text
-      let choiceHTML = choice.text;
-      // Show stat effects if available
-      if (choice.tags) {
-        const statTags = choice.tags.filter(t => t.startsWith('+') || t.startsWith('-'));
-        if (statTags.length) {
-          const statDiv = document.createElement('div');
-          statDiv.className = 'choice-stat';
-          statDiv.textContent = statTags.join(' ');
-          btn.appendChild(document.createTextNode(choice.text + ' '));
-          btn.appendChild(statDiv);
-        } else {
-          btn.textContent = choice.text;
-        }
-      } else {
-        btn.textContent = choice.text;
-      }
-      btn.onclick = () => {
-        story.ChooseChoiceIndex(i);
-        // Check if we need to load a new chapter
-        const nextKnot = guessNextKnot(choice);
-        checkChapterLoad(nextKnot);
-        continueStory();
-      };
-      choicesEl.appendChild(btn);
-    });
+  // Auto-continue or show choices
+  if (node.goto && !node.ending) {
+    setTimeout(() => goNode(node.goto), node.gotoDelay || 200);
+  } else if (node.ending || ENDINGS.has(nodeId)) {
+    showEnding(nodeId);
+  } else if (node.choices && node.choices.length > 0) {
+    showChoices(node.choices);
   } else {
-    // No choices = story ended or blocked
     document.getElementById('restart').style.display = 'block';
   }
 
-  if (!didContinue && !choices?.length) {
-    document.getElementById('restart').style.display = 'block';
-  }
-}
-
-function guessNextKnot(choice) {
-  // Extract knot name from choice text or path
-  // For now, return empty - chapter load is triggered by chapter gates in story
-  return '';
-}
-
-function checkChapterLoad(knotName) {
-  if (CHAPTER_GATES[knotName]) {
-    // This is handled in story via diverts already
-    // Just a hook for potential future preloading
-  }
-}
-
-// ─── Ending display ─────────────────────────────────────────────────────────────
-function showEnding(nodeName) {
-  const sbti = SBTI_MAP[nodeName] || SBTI_MAP['end_mirror'];
-  document.getElementById('sbti-type').textContent = sbti.type;
-  document.getElementById('sbti-name').textContent = sbti.name;
-  document.getElementById('sbti-desc').textContent = sbti.desc;
-  document.getElementById('sbti-quote').textContent = sbti.quote;
-  document.getElementById('sbti-result').style.display = 'block';
-  document.getElementById('restart').style.display = 'block';
-  document.getElementById('choices').innerHTML = '';
   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
-// ─── Progress bar ──────────────────────────────────────────────────────────────
-function updateProgress() {
-  const pct = Math.min(100, (nodeCount / TOTAL_NODES) * 100);
-  document.getElementById('progress-fill').style.width = pct + '%';
+function showChoices(choices) {
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  choices.forEach((ch, i) => {
+    if (ch.cond && !checkCond(ch.cond)) return;
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.style.animationDelay = (i * 0.07) + 's';
+
+    const label = document.createElement('span');
+    label.textContent = ch.text;
+    btn.appendChild(label);
+
+    if (ch.effects) {
+      const hint = Object.entries(ch.effects)
+        .filter(([,v]) => v !== 0)
+        .map(([k,v]) => (v > 0 ? '+' : '') + v + k)
+        .join(' ');
+      if (hint) {
+        const h = document.createElement('span');
+        h.className = 'stat-hint';
+        h.textContent = hint;
+        btn.appendChild(h);
+      }
+    }
+    btn.onclick = () => {
+      if (ch.effects) applyEffects(ch.effects);
+      if (ch.load) loadChapter(ch.load);
+      goNode(ch.next);
+    };
+    box.appendChild(btn);
+  });
 }
 
-// ─── Restart ─────────────────────────────────────────────────────────────────
-function restartGame() {
-  document.getElementById('story-text').innerHTML = '';
-  document.getElementById('choices').innerHTML = '';
-  document.getElementById('sbti-result').style.display = 'none';
-  document.getElementById('restart').style.display = 'none';
-  document.getElementById('progress-fill').style.width = '0%';
-  nodeCount = 0;
-  statSnapshot = { anxiety: 10, competitiveness: 50, aiTrust: 0, wallet: 50 };
-  cloudUnlocked = false;
-  // Reinit
-  story.ResetHistory();
-  updateStatsDisplay();
-  continueStory();
-}
-
-// ─── Cloud line unlock ───────────────────────────────────────────────────────
-function tryUnlockCloud() {
-  if (cloudUnlocked && !loadedChapters.has('cloud.json')) {
-    loadChapter('cloud.json');
+function checkCond(cond) {
+  if (!cond) return true;
+  if (typeof cond === 'string') {
+    // e.g. "anxiety >= 30"
+    const m = cond.match(/(\w+)\s*(>=|<=|>|<|==)\s*(\d+)/);
+    if (!m) return true;
+    const [, stat, op, val] = m;
+    const v = parseInt(val);
+    const cur = stats[stat] ?? 0;
+    if (op === '>=') return cur >= v;
+    if (op === '<=') return cur <= v;
+    if (op === '>') return cur > v;
+    if (op === '<') return cur < v;
+    if (op === '==') return cur == v;
   }
+  return true;
 }
 
-// Start
+function showEnding(nodeId) {
+  const info = SBTI[nodeId] || SBTI['end_mirror'];
+  const story = document.getElementById('story');
+  const box = document.createElement('div');
+  box.className = 'ending-box';
+  box.innerHTML = `
+    <div class="sbti-type">${info.t}</div>
+    <div class="sbti-name">${info.n}</div>
+    <div class="sbti-desc">${info.d}</div>
+    <div class="sbti-quote">${info.q}</div>
+  `;
+  story.appendChild(box);
+  document.getElementById('restart').style.display = 'block';
+  document.getElementById('choices').innerHTML = '';
+}
+
+async function loadChapter(filename) {
+  if (loadedChapters.has(filename)) return;
+  loadedChapters.add(filename);
+  document.getElementById('load-msg').style.display = 'block';
+  document.getElementById('load-msg').textContent = '正在加载章节...';
+  try {
+    const r = await fetch(filename);
+    if (!r.ok) throw new Error();
+    const data = await r.json();
+    Object.assign(allNodes, data.nodes);
+  } catch(e) {
+    console.warn('章节 ' + filename + ' 加载失败，跳过');
+  }
+  document.getElementById('load-msg').style.display = 'none';
+}
+
+function restartGame() {
+  allNodes = {};
+  loadedChapters.clear();
+  stats = { anxiety:10, competitiveness:50, aiTrust:0, wallet:50 };
+  nodeCount = 0;
+  document.getElementById('story').innerHTML = '';
+  document.getElementById('choices').innerHTML = '';
+  document.getElementById('restart').style.display = 'none';
+  document.getElementById('prog-fill').style.width = '0%';
+  document.getElementById('load-msg').style.display = 'block';
+  document.getElementById('load-msg').textContent = '正在加载故事...';
+  init();
+}
+
 init();
 </script>
 </body>
