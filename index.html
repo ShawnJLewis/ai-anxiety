@@ -70,84 +70,93 @@
 <button id="restart-btn" onclick="restartGame()">🔄 重新开始</button>
 
 <script>
+// ── State ──────────────────────────────────────────────────────────
 const STORY_URL = 'story.json';
 let story = {};
-let state = { stats: {}, tags: [] };
+let state = { node: '', stats: {}, tags: [], sbtiTypes: [] };
 
+// ── Init ──────────────────────────────────────────────────────────
 async function loadStory() {
-  const resp = await fetch(STORY_URL + '?t=' + Date.now());
-  story = await resp.json();
-  state = {
-    node: story.game.start,
-    stats: {},
-    tags: [],
-    sbtiTypes: []
-  };
-  for (const [key, cfg] of Object.entries(story.stats)) {
-    state.stats[key] = cfg.start;
+  try {
+    const resp = await fetch(STORY_URL + '?t=' + Date.now());
+    if (!resp.ok) throw new Error('story.json 加载失败');
+    story = await resp.json();
+  } catch(e) {
+    document.getElementById('game').innerHTML =
+      '<div style="color:#e85d5d;padding:20px">故事加载失败，请刷新重试。<br><small>' + e.message + '</small></div>';
+    return;
   }
+  state = { node: story.game.start, stats: {}, tags: [], sbtiTypes: [] };
+  for (const [k, cfg] of Object.entries(story.stats)) state.stats[k] = cfg.start;
   document.getElementById('loading').textContent = '';
   render();
 }
 
-function buildResumeHtml(resume) {
-  if (!resume.name) {
-    return `<div class="resume-card resume-blank"><div class="resume-quote">"${resume.quote || ''}"</div></div>`;
-  }
-  let expHtml = '';
-  for (const exp of (resume.experience || [])) {
-    expHtml += `<div class="resume-exp-item">
-      <div class="resume-exp-header">
-        <span class="resume-exp-role">${exp.role}</span>
-        <span class="resume-exp-period">${exp.period}</span>
-      </div>
-      <div class="resume-exp-company">${exp.company}</div>
-      <div class="resume-exp-desc">${exp.desc}</div>
-    </div>`;
-  }
-  let skillsHtml = '';
-  for (const s of (resume.skills || [])) {
-    skillsHtml += `<span class="resume-skill">${s}</span>`;
-  }
-  let html = `<div class="resume-card"><div class="resume-full">`;
-  html += `<div class="resume-header">
-    <div class="resume-name">${resume.name}</div>
-    <div class="resume-title">${resume.title || ''}</div>
-    <div class="resume-contact">${resume.contact || ''}</div>
-  </div>`;
-  if (expHtml) html += `<div class="resume-section"><div class="resume-section-title">经历</div>${expHtml}</div>`;
-  if (skillsHtml) html += `<div class="resume-section"><div class="resume-section-title">技能</div><div class="resume-skills">${skillsHtml}</div></div>`;
-  if (resume.quote) html += `<div class="resume-quote-footer">"${resume.quote}"</div>`;
-  html += `</div></div>`;
-  return html;
+// ── Escape helper (prevent HTML injection in button text) ───────────
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
+// ── Resume builder ─────────────────────────────────────────────────
+function buildResumeHtml(resume) {
+  if (!resume.name) {
+    return `<div class="resume-card resume-blank"><div class="resume-quote">"${esc(resume.quote || '')}"</div></div>`;
+  }
+  let exp = '';
+  for (const x of (resume.experience || [])) {
+    exp += `<div class="resume-exp-item">
+      <div class="resume-exp-header"><span class="resume-exp-role">${esc(x.role)}</span><span class="resume-exp-period">${esc(x.period)}</span></div>
+      <div class="resume-exp-company">${esc(x.company)}</div>
+      <div class="resume-exp-desc">${esc(x.desc)}</div>
+    </div>`;
+  }
+  let sk = '';
+  for (const s of (resume.skills || [])) sk += `<span class="resume-skill">${esc(s)}</span>`;
+  let h = `<div class="resume-card"><div class="resume-full">`;
+  h += `<div class="resume-header"><div class="resume-name">${esc(resume.name)}</div>`;
+  h += `<div class="resume-title">${esc(resume.title || '')}</div>`;
+  h += `<div class="resume-contact">${esc(resume.contact || '')}</div></div>`;
+  if (exp) h += `<div class="resume-section"><div class="resume-section-title">经历</div>${exp}</div>`;
+  if (sk) h += `<div class="resume-section"><div class="resume-section-title">技能</div><div class="resume-skills">${sk}</div></div>`;
+  if (resume.quote) h += `<div class="resume-quote-footer">"${esc(resume.quote)}"</div>`;
+  h += `</div></div>`;
+  return h;
+}
+
+// ── Render ─────────────────────────────────────────────────────────
 function render() {
   const node = story.nodes[state.node];
-  if (!node) { document.getElementById('game').innerHTML = '<div id="text">节点不存在: ' + state.node + '</div>'; return; }
+  if (!node) {
+    document.getElementById('game').innerHTML = '<div id="text" style="color:#e85d5d">节点不存在: ' + esc(state.node) + '</div>';
+    return;
+  }
 
   let html = '';
 
-  // Chapter
-  if (node.text.match(/【第.+?】/)) {
-    html += `<div id="chapter">${node.text.match(/【(.+?)】/)[1]}</div>`;
+  // Chapter label
+  const chMatch = node.text.match(/【(.+?)】/);
+  if (chMatch) {
+    html += `<div id="chapter">${esc(chMatch[1])}</div>`;
   } else if (state.node === 'prologue') {
     html += `<div id="chapter">序章</div>`;
   }
 
-  // Text
+  // Story text
   html += `<div id="text">${node.text}</div>`;
 
-  // SBTI
+  // Ending: SBTI + resume
   if (node.ending) {
     const sbti = story.sbti_types[node.sbti];
     html += `<div id="sbti">
       <div class="sbti-tag">你的AI焦虑类型</div>
-      <div id="sbti-type">${node.sbti}</div>
-      <div id="sbti-name">${sbti.name}</div>
-      <div id="sbti-desc">${sbti.desc}</div>
+      <div id="sbti-type">${esc(node.sbti)}</div>
+      <div id="sbti-name">${esc(sbti.name)}</div>
+      <div id="sbti-desc">${esc(sbti.desc)}</div>
     </div>`;
-    // Resume
     html += `<div id="resume">${buildResumeHtml(node.resume || {})}</div>`;
     document.getElementById('share-btn').style.display = 'block';
     document.getElementById('restart-btn').style.display = 'block';
@@ -159,8 +168,10 @@ function render() {
     html += `<div id="choices">`;
     for (const c of node.choices) {
       if (c.requires && !c.requires.some(t => state.tags.includes(t))) continue;
-      const tag = c.tags ? c.tags.map(t => `<span style="font-size:10px;color:#888;margin-right:4px">#${t}</span>`).join('') : '';
-      html += `<button class="choice" onclick="choose('${c.next}', ${JSON.stringify(c.effects || {})}, ${JSON.stringify(c.tags || [])})">${tag}${c.text}</button>`;
+      const tags = c.tags ? c.tags.map(t => `<span style="font-size:10px;color:#888;margin-right:4px">#${esc(t)}</span>`).join('') : '';
+      const data = esc(JSON.stringify({ next: c.next, effects: c.effects || {}, tags: c.tags || [] }));
+      // Use data-* instead of onclick — no JS eval, no quote escaping
+      html += `<button class="choice" data-choice="${data}">${tags}${esc(c.text)}</button>`;
     }
     html += `</div>`;
   } else if (node.ending) {
@@ -169,16 +180,18 @@ function render() {
 
   document.getElementById('game').innerHTML = html;
 
-  // Stats
+  // Stats bars
   const statsEl = document.getElementById('stats');
-  let statsHtml = '';
-  for (const [key, val] of Object.entries(state.stats)) {
-    const cfg = story.stats[key];
-    const pct = Math.round((val / cfg.max) * 100);
-    const color = key === 'anxiety' ? (pct > 70 ? '#e85d5d' : pct > 40 ? '#e8c96e' : '#5de8a0') : '#5de8a0';
-    statsHtml += `<div class="stat"><span class="stat-label">${cfg.label}</span><div class="stat-bar"><div class="stat-fill" style="width:${pct}%;background:${color}"></div></div><span style="font-size:11px;color:${color}">${val}</span></div>`;
+  let sHtml = '';
+  for (const [k, v] of Object.entries(state.stats)) {
+    const cfg = story.stats[k];
+    const pct = Math.round((v / cfg.max) * 100);
+    const col = k === 'anxiety' ? (pct > 70 ? '#e85d5d' : pct > 40 ? '#e8c96e' : '#5de8a0') : '#5de8a0';
+    sHtml += `<div class="stat"><span class="stat-label">${esc(cfg.label)}</span>`;
+    sHtml += `<div class="stat-bar"><div class="stat-fill" style="width:${pct}%;background:${col}"></div></div>`;
+    sHtml += `<span style="font-size:11px;color:${col}">${v}</span></div>`;
   }
-  statsEl.innerHTML = statsHtml;
+  statsEl.innerHTML = sHtml;
   statsEl.style.display = 'flex';
   statsEl.style.flexDirection = 'column';
   statsEl.style.gap = '6px';
@@ -186,10 +199,25 @@ function render() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function choose(next, effects, tags) {
-  for (const [key, val] of Object.entries(effects)) {
-    if (story.stats[key]) {
-      state.stats[key] = Math.max(story.stats[key].min, Math.min(story.stats[key].max, state.stats[key] + val));
+// ── Event delegation: catch all button clicks ──────────────────────
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.choice');
+  if (!btn) return;
+  const raw = btn.dataset.choice;
+  if (!raw) return;
+  try {
+    const { next, effects, tags } = JSON.parse(raw);
+    doChoose(next, effects, tags);
+  } catch(err) {
+    console.error('选项解析失败:', err);
+  }
+});
+
+function doChoose(next, effects, tags) {
+  for (const [k, v] of Object.entries(effects)) {
+    if (story.stats[k]) {
+      const cfg = story.stats[k];
+      state.stats[k] = Math.max(cfg.min, Math.min(cfg.max, state.stats[k] + v));
     }
   }
   if (tags) state.tags.push(...tags);
@@ -198,15 +226,18 @@ function choose(next, effects, tags) {
   updateProgress();
 }
 
+// Expose choose globally for any legacy inline onclick (safety net)
+window.choose = function(next, effects, tags) {
+  doChoose(next, effects || {}, tags || []);
+};
+
 function updateProgress() {
   const visited = new Set();
   function walk(n) {
     if (visited.has(n)) return;
     visited.add(n);
-    const node = story.nodes[n];
-    if (node && node.choices) {
-      node.choices.forEach(c => { if (!c.requires) walk(c.next); });
-    }
+    const nd = story.nodes[n];
+    if (nd && nd.choices) nd.choices.forEach(c => { if (!c.requires) walk(c.next); });
   }
   walk(story.game.start);
   const pct = Math.min(100, Math.round((visited.size / Object.keys(story.nodes).length) * 100));
@@ -217,7 +248,7 @@ function shareResult() {
   const key = state.sbtiTypes[state.sbtiTypes.length - 1];
   const sbti = story.sbti_types[key];
   const resume = story.nodes[state.node].resume || {};
-  const text = `我的AI焦虑类型是 ${key} · ${sbti.name}\n${sbti.desc}\n\n${resume.quote ? '「' + resume.quote + '」\n\n' : ''}来测试你的：《最后的简历》\n🌐 https://shawnjlewis.github.io/ai-anxiety/`;
+  const text = `我的AI焦虑类型是 ${key} · ${sbti.name}\n${sbti.desc}\n\n${resume.quote ? '「' + resume.quote + '」\n\n' : ''}来测试你的：《最后的简历》\nhttps://shawnjlewis.github.io/ai-anxiety/`;
   if (navigator.share) {
     navigator.share({ title: '我的AI焦虑类型', text });
   } else {
@@ -228,13 +259,14 @@ function shareResult() {
 function restartGame() {
   localStorage.removeItem('ai-anxiety-state');
   state = { node: story.game.start, stats: {}, tags: [], sbtiTypes: [] };
-  for (const [key, cfg] of Object.entries(story.stats)) state.stats[key] = cfg.start;
+  for (const [k, cfg] of Object.entries(story.stats)) state.stats[k] = cfg.start;
   document.getElementById('share-btn').style.display = 'none';
   document.getElementById('restart-btn').style.display = 'none';
   document.getElementById('progress-bar').style.width = '0%';
   render();
 }
 
+// ── Go ─────────────────────────────────────────────────────────────
 loadStory();
 </script>
 </body>
