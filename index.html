@@ -30,7 +30,20 @@
     #sbti-name { font-size: 14px; color: var(--text); margin: 6px 0 4px; }
     #sbti-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
     #choices { display: flex; flex-direction: column; gap: 10px; }
-    .choice { background: #1c1c28; border: 1px solid #2a2a3a; border-radius: 10px; padding: 14px 16px; text-align: left; font-size: 14px; color: var(--text); cursor: pointer; transition: all 0.18s ease; line-height: 1.5; }
+    .choice {
+      background: #1c1c28;
+      border: 1px solid #2a2a3a;
+      border-radius: 10px;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 14px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.18s ease;
+      line-height: 1.5;
+      width: 100%;
+      font-family: inherit;
+    }
     .choice:hover { background: #252536; border-color: var(--accent); transform: translateX(3px); }
     .choice:active { transform: translateX(3px) scale(0.99); }
     #share-btn { display: none; width: 100%; max-width: 640px; margin-top: 12px; background: linear-gradient(135deg, #1f2a1f, #1a2a1a); border: 1px solid var(--ok); color: var(--ok); padding: 14px; border-radius: 10px; font-size: 14px; cursor: pointer; }
@@ -70,7 +83,7 @@
 <button id="restart-btn" onclick="restartGame()">🔄 重新开始</button>
 
 <script>
-// ── State ──────────────────────────────────────────────────────────
+// ── State ─────────────────────────────────────────────────────────
 const STORY_URL = 'story.json';
 let story = {};
 let state = { node: '', stats: {}, tags: [], sbtiTypes: [] };
@@ -79,7 +92,7 @@ let state = { node: '', stats: {}, tags: [], sbtiTypes: [] };
 async function loadStory() {
   try {
     const resp = await fetch(STORY_URL + '?t=' + Date.now());
-    if (!resp.ok) throw new Error('story.json 加载失败');
+    if (!resp.ok) throw new Error('story.json 加载失败 HTTP ' + resp.status);
     story = await resp.json();
   } catch(e) {
     document.getElementById('game').innerHTML =
@@ -92,38 +105,48 @@ async function loadStory() {
   render();
 }
 
-// ── Escape helper (prevent HTML injection in button text) ───────────
-function esc(s) {
+// ── Escape helper for HTML text nodes ─────────────────────────────
+function escHtml(s) {
   return String(s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/>/g, '&gt;');
+}
+
+// ── Encode choice data into a form submission ─────────────────────
+// Uses Base64 to safely encode arbitrary JSON into a hidden field.
+// No HTML attribute escaping issues.
+function b64enc(obj) {
+  return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+}
+
+function b64dec(str) {
+  return JSON.parse(decodeURIComponent(escape(atob(str))));
 }
 
 // ── Resume builder ─────────────────────────────────────────────────
 function buildResumeHtml(resume) {
   if (!resume.name) {
-    return `<div class="resume-card resume-blank"><div class="resume-quote">"${esc(resume.quote || '')}"</div></div>`;
+    return '<div class="resume-card resume-blank"><div class="resume-quote">"' + escHtml(resume.quote || '') + '"</div></div>';
   }
   let exp = '';
   for (const x of (resume.experience || [])) {
-    exp += `<div class="resume-exp-item">
-      <div class="resume-exp-header"><span class="resume-exp-role">${esc(x.role)}</span><span class="resume-exp-period">${esc(x.period)}</span></div>
-      <div class="resume-exp-company">${esc(x.company)}</div>
-      <div class="resume-exp-desc">${esc(x.desc)}</div>
-    </div>`;
+    exp += '<div class="resume-exp-item">' +
+      '<div class="resume-exp-header"><span class="resume-exp-role">' + escHtml(x.role) + '</span><span class="resume-exp-period">' + escHtml(x.period) + '</span></div>' +
+      '<div class="resume-exp-company">' + escHtml(x.company) + '</div>' +
+      '<div class="resume-exp-desc">' + escHtml(x.desc) + '</div>' +
+      '</div>';
   }
   let sk = '';
-  for (const s of (resume.skills || [])) sk += `<span class="resume-skill">${esc(s)}</span>`;
-  let h = `<div class="resume-card"><div class="resume-full">`;
-  h += `<div class="resume-header"><div class="resume-name">${esc(resume.name)}</div>`;
-  h += `<div class="resume-title">${esc(resume.title || '')}</div>`;
-  h += `<div class="resume-contact">${esc(resume.contact || '')}</div></div>`;
-  if (exp) h += `<div class="resume-section"><div class="resume-section-title">经历</div>${exp}</div>`;
-  if (sk) h += `<div class="resume-section"><div class="resume-section-title">技能</div><div class="resume-skills">${sk}</div></div>`;
-  if (resume.quote) h += `<div class="resume-quote-footer">"${esc(resume.quote)}"</div>`;
-  h += `</div></div>`;
+  for (const s of (resume.skills || [])) sk += '<span class="resume-skill">' + escHtml(s) + '</span>';
+  let h = '<div class="resume-card"><div class="resume-full">';
+  h += '<div class="resume-header"><div class="resume-name">' + escHtml(resume.name) + '</div>';
+  h += '<div class="resume-title">' + escHtml(resume.title || '') + '</div>';
+  h += '<div class="resume-contact">' + escHtml(resume.contact || '') + '</div></div>';
+  if (exp) h += '<div class="resume-section"><div class="resume-section-title">经历</div>' + exp + '</div>';
+  if (sk) h += '<div class="resume-section"><div class="resume-section-title">技能</div><div class="resume-skills">' + sk + '</div></div>';
+  if (resume.quote) h += '<div class="resume-quote-footer">"' + escHtml(resume.quote) + '"</div>';
+  h += '</div></div>';
   return h;
 }
 
@@ -131,7 +154,7 @@ function buildResumeHtml(resume) {
 function render() {
   const node = story.nodes[state.node];
   if (!node) {
-    document.getElementById('game').innerHTML = '<div id="text" style="color:#e85d5d">节点不存在: ' + esc(state.node) + '</div>';
+    document.getElementById('game').innerHTML = '<div style="color:#e85d5d">节点不存在: ' + escHtml(state.node) + '</div>';
     return;
   }
 
@@ -140,45 +163,64 @@ function render() {
   // Chapter label
   const chMatch = node.text.match(/【(.+?)】/);
   if (chMatch) {
-    html += `<div id="chapter">${esc(chMatch[1])}</div>`;
+    html += '<div id="chapter">' + escHtml(chMatch[1]) + '</div>';
   } else if (state.node === 'prologue') {
-    html += `<div id="chapter">序章</div>`;
+    html += '<div id="chapter">序章</div>';
   }
 
   // Story text
-  html += `<div id="text">${node.text}</div>`;
+  html += '<div id="text">' + node.text + '</div>';
 
   // Ending: SBTI + resume
   if (node.ending) {
     const sbti = story.sbti_types[node.sbti];
-    html += `<div id="sbti">
-      <div class="sbti-tag">你的AI焦虑类型</div>
-      <div id="sbti-type">${esc(node.sbti)}</div>
-      <div id="sbti-name">${esc(sbti.name)}</div>
-      <div id="sbti-desc">${esc(sbti.desc)}</div>
-    </div>`;
-    html += `<div id="resume">${buildResumeHtml(node.resume || {})}</div>`;
+    html += '<div id="sbti">' +
+      '<div class="sbti-tag">你的AI焦虑类型</div>' +
+      '<div id="sbti-type">' + escHtml(node.sbti) + '</div>' +
+      '<div id="sbti-name">' + escHtml(sbti.name) + '</div>' +
+      '<div id="sbti-desc">' + escHtml(sbti.desc) + '</div>' +
+      '</div>';
+    html += '<div id="resume">' + buildResumeHtml(node.resume || {}) + '</div>';
     document.getElementById('share-btn').style.display = 'block';
     document.getElementById('restart-btn').style.display = 'block';
     state.sbtiTypes.push(node.sbti);
   }
 
-  // Choices
+  // Choices as forms with submit buttons
   if (node.choices && node.choices.length > 0) {
-    html += `<div id="choices">`;
     for (const c of node.choices) {
       if (c.requires && !c.requires.some(t => state.tags.includes(t))) continue;
-      const tags = c.tags ? c.tags.map(t => `<span style="font-size:10px;color:#888;margin-right:4px">#${esc(t)}</span>`).join('') : '';
-      const data = esc(JSON.stringify({ next: c.next, effects: c.effects || {}, tags: c.tags || [] }));
-      // Use data-* instead of onclick — no JS eval, no quote escaping
-      html += `<button class="choice" data-choice="${data}">${tags}${esc(c.text)}</button>`;
+      const choiceData = b64enc({ next: c.next, effects: c.effects || {}, tags: c.tags || [] });
+      const tags = c.tags ? c.tags.map(t => '<span style="font-size:10px;color:#888;margin-right:4px">#' + escHtml(t) + '</span>').join('') : '';
+      // Encode button text in base64 too to avoid all HTML escaping issues
+      const btnText = b64enc(c.text);
+      html += '<form method="post" onsubmit="return false" data-choice="' + choiceData + '">' +
+        '<button type="submit" class="choice">' + tags + '<span data-text="' + btnText + '"></span></button>' +
+        '</form>';
     }
-    html += `</div>`;
   } else if (node.ending) {
-    html += `<div style="text-align:center;color:var(--muted);font-size:13px;margin-top:8px">— 完 —</div>`;
+    html += '<div style="text-align:center;color:var(--muted);font-size:13px;margin-top:8px">— 完 —</div>';
   }
 
   document.getElementById('game').innerHTML = html;
+
+  // Decode button texts from base64
+  document.querySelectorAll('.choice span[data-text]').forEach(function(span) {
+    try { span.textContent = b64dec(span.dataset.text); } catch(e) {}
+  });
+
+  // Attach form submit handlers
+  document.querySelectorAll('form[data-choice]').forEach(function(form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      try {
+        const { next, effects, tags } = b64dec(form.dataset.choice);
+        doChoose(next, effects, tags);
+      } catch(err) {
+        alert('选项解析失败: ' + err);
+      }
+    });
+  });
 
   // Stats bars
   const statsEl = document.getElementById('stats');
@@ -187,9 +229,9 @@ function render() {
     const cfg = story.stats[k];
     const pct = Math.round((v / cfg.max) * 100);
     const col = k === 'anxiety' ? (pct > 70 ? '#e85d5d' : pct > 40 ? '#e8c96e' : '#5de8a0') : '#5de8a0';
-    sHtml += `<div class="stat"><span class="stat-label">${esc(cfg.label)}</span>`;
-    sHtml += `<div class="stat-bar"><div class="stat-fill" style="width:${pct}%;background:${col}"></div></div>`;
-    sHtml += `<span style="font-size:11px;color:${col}">${v}</span></div>`;
+    sHtml += '<div class="stat"><span class="stat-label">' + escHtml(cfg.label) + '</span>';
+    sHtml += '<div class="stat-bar"><div class="stat-fill" style="width:' + pct + '%;background:' + col + '"></div></div>';
+    sHtml += '<span style="font-size:11px;color:' + col + '">' + v + '</span></div>';
   }
   statsEl.innerHTML = sHtml;
   statsEl.style.display = 'flex';
@@ -199,20 +241,7 @@ function render() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ── Event delegation: catch all button clicks ──────────────────────
-document.addEventListener('click', function(e) {
-  const btn = e.target.closest('.choice');
-  if (!btn) return;
-  const raw = btn.dataset.choice;
-  if (!raw) return;
-  try {
-    const { next, effects, tags } = JSON.parse(raw);
-    doChoose(next, effects, tags);
-  } catch(err) {
-    console.error('选项解析失败:', err);
-  }
-});
-
+// ── Choose logic ──────────────────────────────────────────────────
 function doChoose(next, effects, tags) {
   for (const [k, v] of Object.entries(effects)) {
     if (story.stats[k]) {
@@ -226,10 +255,8 @@ function doChoose(next, effects, tags) {
   updateProgress();
 }
 
-// Expose choose globally for any legacy inline onclick (safety net)
-window.choose = function(next, effects, tags) {
-  doChoose(next, effects || {}, tags || []);
-};
+// Safety net for any legacy onclick refs
+window.doChoose = doChoose;
 
 function updateProgress() {
   const visited = new Set();
@@ -248,11 +275,13 @@ function shareResult() {
   const key = state.sbtiTypes[state.sbtiTypes.length - 1];
   const sbti = story.sbti_types[key];
   const resume = story.nodes[state.node].resume || {};
-  const text = `我的AI焦虑类型是 ${key} · ${sbti.name}\n${sbti.desc}\n\n${resume.quote ? '「' + resume.quote + '」\n\n' : ''}来测试你的：《最后的简历》\nhttps://shawnjlewis.github.io/ai-anxiety/`;
+  const text = '我的AI焦虑类型是 ' + key + ' · ' + sbti.name + '\n' + sbti.desc + '\n\n' +
+    (resume.quote ? '「' + resume.quote + '」\n\n' : '') +
+    '来测试你的：《最后的简历》\nhttps://shawnjlewis.github.io/ai-anxiety/';
   if (navigator.share) {
     navigator.share({ title: '我的AI焦虑类型', text });
   } else {
-    navigator.clipboard.writeText(text).then(() => alert('已复制到剪贴板'));
+    navigator.clipboard.writeText(text).then(function() { alert('已复制到剪贴板'); });
   }
 }
 
