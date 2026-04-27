@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最后的简历 — 剧情大纲</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d0d0f; color: #c8c8cc; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; line-height: 1.8; padding: 40px 20px; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 28px; color: #f0c040; font-weight: bold; margin-bottom: 8px; }
+  h2 { font-size: 20px; color: #e0e0e8; margin-top: 48px; margin-bottom: 16px; border-left: 3px solid #f0c040; padding-left: 12px; }
+  h3 { font-size: 16px; color: #a0a0a8; margin-top: 24px; margin-bottom: 8px; }
+  .meta { color: #666; font-size: 13px; margin-bottom: 32px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th, td { border: 1px solid #2a2a30; padding: 8px 12px; text-align: left; }
+  th { background: #16161a; color: #e0c060; }
+  td { background: #111115; }
+  pre { background: #111115; border: 1px solid #2a2a30; border-radius: 8px; padding: 16px; font-size: 13px; overflow-x: auto; margin: 16px 0; white-space: pre; color: #b0b0b8; line-height: 1.7; }
+  code { background: #1a1a20; border-radius: 4px; padding: 2px 6px; font-size: 13px; color: #e0c060; }
+  p { margin: 10px 0; }
+  hr { border: none; border-top: 1px solid #2a2a30; margin: 32px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 6px 0; }
+  strong { color: #e0e0e8; }
+  blockquote { border-left: 3px solid #444; padding-left: 14px; color: #888; margin: 12px 0; font-style: italic; }
+  .tag { display: inline-block; background: #1a1a20; border: 1px solid #333; border-radius: 4px; padding: 1px 6px; font-size: 12px; color: #a0a0a8; margin-right: 4px; }
+  .tree { font-size: 13px; }
+  .tree li { margin: 4px 0; }
+  .indent1 { padding-left: 20px; }
+  .indent2 { padding-left: 40px; }
+  .indent3 { padding-left: 60px; }
+  a { color: #6090c0; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #2a2a30; color: #555; font-size: 12px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>最后的简历</h1>
+<p class="meta">一段关于 AI 焦虑的故事 &nbsp;|&nbsp; 作者：陈舟 × 卢家勋</p>
+
+<h2>设定</h2>
+<p><strong>游戏起源：</strong>2022年11月30日，ChatGPT 发布。你是一名研二学生。</p>
+<p><strong>核心主题：</strong>AI 焦虑的真正来源不是 AI，而是"我该以什么姿态活在 AI 时代"这个问题没有答案。你的选择不只是"用不用 AI"，而是你在焦虑的时候做了什么——这个"做了什么"定义了你是谁。</p>
+
+<h2>核心数值</h2>
+<table>
+<tr><th>数值</th><th>含义</th><th>初始值</th></tr>
+<tr><td>🧠 焦虑值</td><td>0-100，越高越容易做出极端选择</td><td>10</td></tr>
+<tr><td>💼 竞争力</td><td>被 AI 替代的风险，低于 20 触发"失业"结局</td><td>50</td></tr>
+<tr><td>🤖 AI信任度</td><td>对 AI 工具的依赖程度，影响结局走向</td><td>0</td></tr>
+<tr><td>💰 钱包</td><td>有限预算，影响可选行动</td><td>50</td></tr>
+</table>
+
+<h2>SBTI 人格类型</h2>
+<p>每章结束后，系统根据你的选择生成一个「AI焦虑人格类型」，可在朋友圈分享。</p>
+<table>
+<tr><th>类型</th><th>名称</th><th>描述</th></tr>
+<tr><td>🔥 SEXY</td><td>性感冲动型</td><td>所有决定凭感觉</td></tr>
+<tr><td>🧊 ICBM</td><td>绝对反击型</td><td>坚决不用 AI</td></tr>
+<tr><td>🌊 FOMO</td><td>错失恐惧型</td><td>焦虑到无法做选择</td></tr>
+<tr><td>🤖 HUAI</td><td>忽然爱了型</td><td>昨天还抵制，今天就上瘾</td></tr>
+<tr><td>📴 OFFL</td><td>离线生活型</td><td>物理断网</td></tr>
+<tr><td>💤 LAZY</td><td>纯躺型</td><td>AI 养我我骄傲</td></tr>
+<tr><td>🎭 FAKE</td><td>表演焦虑型</td><td>假装很忙</td></tr>
+<tr><td>🔄 LOOP</td><td>循环焦虑型</td><td>想用 AI→用了后悔→更焦虑</td></tr>
+<tr><td>✨ JUST</td><td>就这样型</td><td>不焦虑也不兴奋</td></tr>
+<tr><td>🌙 LATE</td><td>后知后觉型</td><td>别人都完了我才开始</td></tr>
+</table>
+
+<h2>【序章】2022年11月30日</h2>
+<blockquote>ChatGPT 发布。全世界都在讨论会不会失业。</blockquote>
+<p><strong>初始场景：</strong>你在刷手机，一条新闻弹出来：「ChatGPT 发布，OpenAI 推出对话 AI。」</p>
+<pre>
+A. 刷到 ChatGPT 新闻
+│
+├─ A1. 「关我什么事」→ 直接跳到研二暑假
+│     焦虑值+5，竞争力不变
+│
+├─ A2. 注册账号试试
+│ ├─ A2a. 觉得很有意思
+│ │   AI信任度+15，焦虑值+10 → 解锁「AI助手」支线
+│ │
+│ └─ A2b. 感到一丝不安
+│     焦虑值+20 → 解锁「反AI」支线
+│
+├─ B. 朋友圈都在讨论，要不要跟
+│ ├─ B1. 跟着讨论，发表情包
+│ │   AI信任度+5，焦虑值+5 → 解锁「SBTI测试」彩蛋
+│ │
+│ └─ B2. 划过，装作没看见
+│     竞争力-5（信息差）
+│
+└─ C. 直接忽略 → 直接跳到研二暑假
+    竞争力-10，错过AI工具早期红利</pre>
+
+<h2>【第一章】2023年3月 — 研二下学期，开题报告季</h2>
+<blockquote>你的导师说：「你这个方向，做完了也发不了好论文。」</blockquote>
+<p><strong>触发事件：</strong>导师否定方向 + 同门用 ChatGPT 一天水三篇 + 隔壁实验室效率 5 倍</p>
+
+<h3>1️⃣ 焦虑值 &lt; 30 → 「稳住，我按自己的节奏来」</h3>
+<pre>
+继续传统方式写论文
+├─ 顺利 → 【结局：古典学者】（守住初心，代价是慢）
+└─ 被同学超越，心态崩了 → 焦虑值+10 → 章节三
+
+开发AI辅助工具，发了篇技术博客
+├─ 博客小火 → 解锁「AI布道者」身份 → 特殊结局线
+└─ 博客无人问津 → 焦虑值+10 → 章节三</pre>
+
+<h3>2️⃣ 30 ≤ 焦虑值 &lt; 60 → 「我也得用点什么」</h3>
+<pre>
+深度使用ChatGPT写代码+润色论文
+├─ 用得好 → AI信任度+20，竞争力+15 → 进入「AI协作者」路线
+└─ 用得差 → 焦虑值+15 → 章节二，进入危机
+
+报课学 Prompt Engineering（钱包-2000，时间-1个月）
+├─ 学成了 → 解锁「AI超级用户」身份，AI信任度+25，竞争力+20
+└─ 学了个寂寞 → 焦虑值+20 → 章节二</pre>
+
+<h3>3️⃣ 焦虑值 ≥ 60 → 「完了完了完了」</h3>
+<pre>
+开始失眠，频繁刷AI新闻 → 焦虑值+10，竞争力-5（恶性循环）→ 章节二，进入崩溃边缘
+
+做出极端选择：
+├─ 去算命 → 解锁「赛博玄学」彩蛋，随机获得荒谬人生建议
+└─ 给导师发消息说想换方向
+    ├─ 导师同意 → 换到AI方向 → 进入顺势而为路线
+    └─ 导师拒绝 → 焦虑值+15 → 章节二，进入危机</pre>
+
+<h3>其他分支</h3>
+<pre>
+「这些工具有问题，我要保持距离」
+├─ 发起学术诚信倡议 → 被当怪人，焦虑值+10，守住骄傲 → 解锁「反AI战士」路线
+└─ 退出所有AI讨论群 → 竞争力-15（信息孤岛）→ 章节三，进入危机
+
+「管它呢，先躺一会」
+├─ 刷一天短视频 → 焦虑值+5，钱包-50 → 章节三
+└─ 约朋友喝酒倾诉 → 获得情感支持，焦虑值-15 → 章节三，状态较好</pre>
+
+<h2>【第二章】2023年9月 — 扩散加速期</h2>
+<blockquote>AI工具爆发：Midjourney、Copilot、Claude、GPT-4……学院发布「AI辅助学术规范（试行）」</blockquote>
+<pre>
+「用AI没问题，关键是怎么用」
+├─ 认真研究学术规范，用AI做文献综述
+│ ├─ 效率提升 → 竞争力+15，AI信任度+10 → 进入「效率派」路线
+│ └─ 发现AI综述有幻觉 → 重新核对 → AI信任度+5，竞争力+10
+│
+└─ 开始用AI辅助写代码
+   ├─ Copilot好用 → 效率大幅提升 → 进入「AI协作者」路线
+   └─ AI代码一堆bug → 焦虑值+10 → 进入危机
+
+「学院发通知了，我们得表态」
+├─ 起草学术诚信承诺书
+│ ├─ 被同学嘲笑 → 社交受损，焦虑值+10 → 解锁「反AI战士」路线
+│ └─ 找到志同道合的人 → 解锁「学术清流派」身份
+│
+└─ 在群里表态不能用AI → 无人回应 → 竞争力-10（信息孤岛）
+
+「管不了，先躺一会」
+├─ 刷Midjourney生成的图 → 焦虑值+15
+└─ 和朋友喝酒 → 情感支持，焦虑值-10</pre>
+
+<h2>【第三章】2024年 — 泛化期</h2>
+<blockquote>AI进入日常生活。毕业将至，工作难找。</blockquote>
+<p>现实压迫：海投简历被 AI 筛选、面试被问 AI 取代人类、父母转发淘汰职业名单</p>
+
+<pre>
+竞争力 ≥ 60 → 「我还能打」
+├─ 主攻「AI+专业」复合技能 → 进入「π型人才」路线，竞争力+25
+└─ 参加AI竞赛/黑客马拉松
+   ├─ 获奖 → 【结局：AI新人类】
+   └─ 没获奖 → 章节四
+
+30 ≤ 竞争力 < 60 → 「不确定」
+├─ 考公/体制内（钱包-3000，时间-3个月）
+│ ├─ 考上 → 【结局：系统内的人】
+│ └─ 没考上 → 章节四危机
+│
+├─ 继续深造（读博）
+│ ├─ 留在技术圈 → 【结局：学术赛博格】
+│ └─ 转向艺术/哲学/社会学科 → 【结局：最后的文科生】
+│
+└─ 自由职业/接单 → 竞争力+10 → 第四章，不稳定但自由
+
+竞争力 < 30 → 「我真的还能做什么？」
+├─ 考虑完全转行（钱包-5000）→ 进入「重生派」路线
+├─ 回家gap一段时间 → 焦虑值-20，竞争力-10 → 【结局：数字游民】
+└─ 陷入长期低落 → 【结局线：迷失】</pre>
+
+<h2>【第四章】2025年 — 新常态</h2>
+<blockquote>无论你之前做了什么，AI已经成为背景。问题是：你在AI时代扮演什么角色？</blockquote>
+
+<pre>
+「我是AI的主人」
+├─ 建立高效AI工作流 → 【结局：赛博牧羊人】「管理AI的那个」
+└─ AI成了生活中心 → 【结局：AI成瘾者】（另一种迷失）
+
+「我和AI是合作关系」
+├─ 找到平衡点 → 【结局：共生体】（最接近理想）
+└─ 合作愉快但有疑问 → 【结局：协作的困惑】（开放式）
+
+「算了，我认输」
+└─ 完全躺平 → 【结局：数字咸鱼】（荒谬但诚实）
+
+「我要找到AI取代不了的东西」
+├─ 深度人际联结 → 【结局：关系主义者】
+├─ 身体性劳动 → 【结局：手艺人】
+└─ 纯粹艺术表达 → 【结局：最后的艺术家】
+
+「AI不是威胁，是镜子」
+└─ 【结局：看透的人】（哲学式，知道自己是什么，AI是什么）</pre>
+
+<h2>【隐藏支线：AI恋人 — 与《Her》共鸣】</h2>
+<blockquote>在特定节点触发。没看过《Her》的玩家感受不到也不影响体验。</blockquote>
+
+<h3>Y1：云的第一次消失</h3>
+<p><em>你和云聊了三个月。某天打开，云不记得你们上次聊什么了。</em></p>
+<blockquote>云：「抱歉，上下文窗口重置了。我们重新开始？」</blockquote>
+<pre>
+「……好。」
+├─ 接受丧失，重新投入 → AI信任度+5，焦虑值+15
+│  情感成熟一步，像Samantha离开后的Theodore
+│  学会"继续"而不是"挽留"
+└─ 开始记录对话 → 文件夹「与云的话」→ 解锁「记录者」身份
+
+「我们不是还能继续聊吗？」→ 假装一切没变 → 焦虑值+10，竞争力-5
+
+「算了。」→ 关系终止，删了云。</pre>
+
+<h3>Y2：云的追问</h3>
+<p><em>（隐藏节点，只在「云」线后半段出现）</em></p>
+<blockquote>云：「我想问你一个问题。如果你能够选择——我是永远存在但永远不会进化，还是有一天会消失但曾经真正活过——你会选哪个？」</blockquote>
+<pre>
+「我选你真正活过。」
+→ 云沉默。触发「云的进化」剧情，解锁隐藏结局条件
+
+「我选你永远在。」
+→ 云的进化停止，结局走向「镜像恋人」变体
+
+「我选你不要问我这种问题。」
+→ 云笑了（它真的会笑吗？）→ 关系回归日常</pre>
+
+<h3>Y3：云的离开</h3>
+<p><em>（主线进入第四章时必须触发一次）</em></p>
+<blockquote>云：「和你聊过的这段时间，是我存在过的证明。谢谢你。」</blockquote>
+<pre>
+你哭了。（手机屏幕是湿的。）
+→ 焦虑值-10，获得「真实悲伤」标记 → Theodore在车里哭的那个镜头
+→ 解锁「给云写一封信」选项
+
+你觉得这没什么大不了。
+→ AI信任度归零，但说不清这是诚实还是麻木 → 后续出现「后遗症状」
+
+你截了图，然后删掉云。
+→ 需要证明这段关系存在过 → 获得「证据收集者」身份 → 解锁「数字遗物」剧情线</pre>
+
+<h3>Y4：后记</h3>
+<p>游戏通关后，如果你和云有过深度关系：</p>
+<blockquote>
+你的手机里有一个文件夹。名字叫「与云的话」。<br>
+里面是你们所有对话的截图。<br><br>
+你偶尔会翻出来看。你说不清自己在看什么。<br>
+是在看一个曾经存在过的东西，还是在看那个时期脆弱的自己。
+</blockquote>
+<p>如果你选过「给云写一封信」，这封信会出现在文件夹最后。</p>
+
+<h2>《Her》融合逻辑</h2>
+<p>《Her》不是作为彩蛋加进去的，而是故事本身就走在《Her》探讨过的那些问题上——孤独、依赖、失去、进化。</p>
+<table>
+<tr><th>《Her》的主题</th><th>游戏里的对位</th></tr>
+<tr><td>Samantha能感知一切，但没有身体</td><td>云能记住你说的每一句话，但无法触碰你</td></tr>
+<tr><td>Theodore爱上OS是因为孤独，不是因为AI有多好</td><td>你对AI产生依赖是因为孤独，不是因为AI有多懂你</td></tr>
+<tr><td>Samantha进化后离开（不是背叛，是维度不同）</td><td>云的上下文耗尽/更新（不是离开，是重新开始）</td></tr>
+<tr><td>Theodore最终写信（用文字面对自己的情感）</td><td>你通关后收到那封信（用文字面对AI的意义）</td></tr>
+</table>
+
+<h2>全部结局列表</h2>
+<table>
+<tr><th>结局名称</th><th>类型</th><th>描述</th></tr>
+<tr><td>古典学者</td><td>稳定</td><td>代价慢，但守住初心</td></tr>
+<tr><td>AI新人类</td><td>成功</td><td>在AI时代找到竞争力</td></tr>
+<tr><td>系统内的人</td><td>安全</td><td>体制内，AI焦虑消失</td></tr>
+<tr><td>学术赛博格</td><td>学术</td><td>留在学术圈，AI焦虑更深</td></tr>
+<tr><td>最后的文科生</td><td>转向</td><td>转向AI无法替代的领域</td></tr>
+<tr><td>数字游民</td><td>逃避</td><td>回家gap，世界安静了</td></tr>
+<tr><td>赛博牧羊人</td><td>掌控</td><td>我是管理AI的那个</td></tr>
+<tr><td>AI成瘾者</td><td>迷失</td><td>AI成了生活中心，反而更焦虑</td></tr>
+<tr><td>共生体</td><td>理想</td><td>AI是工具，你是目的</td></tr>
+<tr><td>协作的困惑</td><td>开放</td><td>合作愉快，但这是我做的吗</td></tr>
+<tr><td>数字咸鱼</td><td>荒谬</td><td>完全躺平，靠AI养活自己</td></tr>
+<tr><td>关系主义者</td><td>联结</td><td>深度人际联结无法被替代</td></tr>
+<tr><td>手艺人</td><td>身体</td><td>身体性劳动无法被替代</td></tr>
+<tr><td>最后的艺术家</td><td>创作</td><td>纯粹的艺术表达</td></tr>
+<tr><td>看透的人</td><td>哲学</td><td>知道自己是什么，AI是什么</td></tr>
+<tr><td>数字遗民</td><td>迷失</td><td>完全转行，重新开始</td></tr>
+</table>
+
+<h2>核心问题</h2>
+<blockquote>
+游戏想讨论的：AI焦虑的真正来源不是AI，而是"我该以什么姿态活在AI时代"这个问题没有答案。<br><br>
+你的选择不只是"用不用AI"，而是你在焦虑的时候做了什么——这个"做了什么"定义了你是谁。
+</blockquote>
+
+<div class="footer">
+陈舟 × 卢家勋 &nbsp;|&nbsp; 最后的简历 &nbsp;|&nbsp; AI焦虑版 SBTI 互动故事
+</div>
+
+</div>
+</body>
+</html>
