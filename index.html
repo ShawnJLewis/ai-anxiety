@@ -4,113 +4,234 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>最后的简历</title>
-  <!-- Built: 2026-04-26 -->
   <style>
+    :root {
+      --bg: #0a0a0f;
+      --card: #13131a;
+      --text: #e0e0e8;
+      --muted: #6b6b7a;
+      --accent: #e8c96e;
+      --danger: #e85d5d;
+      --ok: #5de8a0;
+      --font: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #0a0a0f; color: #e0e0e8; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-    #stats { width: 100%; max-width: 640px; display: none; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+    #stats { width: 100%; max-width: 640px; display: none; gap: 8px; margin-bottom: 12px; }
     .stat { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-    .stat-label { width: 70px; color: #6b6b7a; flex-shrink: 0; }
+    .stat-label { width: 70px; color: var(--muted); flex-shrink: 0; }
     .stat-bar { flex: 1; height: 4px; background: #22222e; border-radius: 2px; overflow: hidden; }
-    .stat-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
-    #game { width: 100%; max-width: 640px; background: #13131a; border-radius: 16px; padding: 28px 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-    #chapter { font-size: 11px; color: #e8c96e; letter-spacing: 2px; margin-bottom: 14px; }
-    #text { font-size: 15px; line-height: 1.85; white-space: pre-wrap; margin-bottom: 24px; min-height: 120px; }
-    #sbti { display: none; background: linear-gradient(135deg, #1a1a28, #20202e); border: 1px solid #e8c96e; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center; }
-    #sbti-type { font-size: 32px; font-weight: 700; color: #e8c96e; letter-spacing: 3px; }
-    #sbti-name { font-size: 14px; margin: 6px 0 4px; }
-    #sbti-desc { font-size: 12px; color: #6b6b7a; line-height: 1.6; }
-    .choice { background: #1c1c28; border: 1px solid #2a2a3a; border-radius: 10px; padding: 14px 16px; text-align: left; font-size: 14px; color: #e0e0e8; cursor: pointer; transition: all 0.18s; line-height: 1.5; margin-bottom: 8px; }
-    .choice:hover { background: #252536; border-color: #e8c96e; transform: translateX(3px); }
-    #choices { display: flex; flex-direction: column; }
-    #loading { text-align: center; padding: 40px; color: #6b6b7a; }
-    .sbti-tag { display: inline-block; font-size: 10px; background: #e8c96e; color: #000; padding: 2px 6px; border-radius: 4px; margin-bottom: 8px; }
+    .stat-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+    #game { width: 100%; max-width: 640px; background: var(--card); border-radius: 16px; padding: 28px 24px; margin-top: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    #chapter { font-size: 11px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+    #text { font-size: 15px; line-height: 1.85; color: var(--text); white-space: pre-wrap; margin-bottom: 24px; min-height: 120px; }
+    #sbti { display: none; background: linear-gradient(135deg, #1a1a28, #20202e); border: 1px solid var(--accent); border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center; }
+    #sbti-type { font-size: 32px; font-weight: 700; color: var(--accent); letter-spacing: 3px; }
+    #sbti-name { font-size: 14px; color: var(--text); margin: 6px 0 4px; }
+    #sbti-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    #choices { display: flex; flex-direction: column; gap: 10px; }
+    .choice { background: #1c1c28; border: 1px solid #2a2a3a; border-radius: 10px; padding: 14px 16px; text-align: left; font-size: 14px; color: var(--text); cursor: pointer; transition: all 0.18s ease; line-height: 1.5; }
+    .choice:hover { background: #252536; border-color: var(--accent); transform: translateX(3px); }
+    .choice:active { transform: translateX(3px) scale(0.99); }
+    #share-btn { display: none; width: 100%; max-width: 640px; margin-top: 12px; background: linear-gradient(135deg, #1f2a1f, #1a2a1a); border: 1px solid var(--ok); color: var(--ok); padding: 14px; border-radius: 10px; font-size: 14px; cursor: pointer; }
+    #restart-btn { display: none; width: 100%; max-width: 640px; margin-top: 8px; background: transparent; border: 1px solid #333; color: var(--muted); padding: 12px; border-radius: 10px; font-size: 13px; cursor: pointer; }
+    #loading { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
+    #progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: var(--accent); transition: width 0.3s; }
+    .sbti-tag { display: inline-block; font-size: 10px; background: var(--accent); color: #000; padding: 2px 6px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 1px; }
+    #resume { display: none; margin-top: 20px; }
+    .resume-card { background: #fff; border-radius: 8px; padding: 28px; color: #222; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    .resume-blank { background: #f9f9f9; border: 1px solid #e0e0e0; height: 180px; display: flex; align-items: center; justify-content: center; }
+    .resume-blank .resume-quote { font-size: 20px; color: #555; font-style: italic; letter-spacing: 2px; text-align: center; }
+    .resume-full { max-width: 580px; margin: 0 auto; }
+    .resume-header { border-bottom: 2px solid #222; padding-bottom: 14px; margin-bottom: 18px; }
+    .resume-name { font-size: 26px; font-weight: 700; color: #111; margin-bottom: 4px; }
+    .resume-title { font-size: 13px; color: #666; margin-bottom: 6px; }
+    .resume-contact { font-size: 12px; color: #888; }
+    .resume-section { margin-bottom: 16px; }
+    .resume-section-title { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+    .resume-exp-item { margin-bottom: 10px; }
+    .resume-exp-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; }
+    .resume-exp-role { font-size: 14px; font-weight: 600; color: #111; }
+    .resume-exp-period { font-size: 11px; color: #aaa; }
+    .resume-exp-company { font-size: 12px; color: #555; margin-bottom: 2px; }
+    .resume-exp-desc { font-size: 12px; color: #666; line-height: 1.5; }
+    .resume-skills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .resume-skill { font-size: 11px; background: #f0f0f0; color: #444; padding: 3px 10px; border-radius: 20px; }
+    .resume-quote-footer { margin-top: 20px; padding-top: 14px; border-top: 1px solid #eee; font-size: 13px; color: #888; font-style: italic; text-align: center; }
   </style>
 </head>
 <body>
+<div id="progress-bar" style="width:0%"></div>
 <div id="stats"></div>
-<div id="game"><div id="loading">加载中...</div></div>
+<div id="game">
+  <div id="loading">加载中...</div>
+</div>
+<button id="share-btn" onclick="shareResult()">📤 分享我的AI焦虑类型</button>
+<button id="restart-btn" onclick="restartGame()">🔄 重新开始</button>
 
 <script>
 const STORY_URL = 'story.json';
-let story = {}, state = {};
+let story = {};
+let state = { stats: {}, tags: [] };
 
 async function loadStory() {
-  const retry = async (n) => {
-    try {
-      const r = await fetch('story.json?v=3&t=' + Date.now());
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      const data = await r.json();
-      if (!data.nodes || !data.stats) throw new Error('Invalid data');
-      story = data;
-      state = { node: story.game.start, stats: {}, tags: [], sbtiTypes: [] };
-      for (const [k, c] of Object.entries(story.stats)) state.stats[k] = c.start;
-      document.getElementById('loading').textContent = '';
-      render();
-    } catch(e) {
-      if (n > 1) {
-        document.getElementById('loading').textContent = '加载失败，重试... (' + (4-n) + ')';
-        await new Promise(r => setTimeout(r, 2000));
-        return retry(n-1);
-      }
-      document.getElementById('loading').textContent = '加载失败，请刷新';
-      console.error(e);
-    }
+  const resp = await fetch(STORY_URL + '?t=' + Date.now());
+  story = await resp.json();
+  state = {
+    node: story.game.start,
+    stats: {},
+    tags: [],
+    sbtiTypes: []
   };
-  retry(3);
+  for (const [key, cfg] of Object.entries(story.stats)) {
+    state.stats[key] = cfg.start;
+  }
+  document.getElementById('loading').textContent = '';
+  render();
 }
 
-function render() { console.log("render called, node:", state.node, "choices:", (story.nodes[state.node]?.choices?.length || 0));
-  const node = story.nodes[state.node];
-  if (!node) return;
-  let html = '';
-  if (node.text.match(/【第.+?】/)) html += '<div id="chapter">' + node.text.match(/【(.+?)】/)[1] + '</div>';
-  else if (state.node === 'prologue') html += '<div id="chapter">序章</div>';
-  html += '<div id="text">' + node.text + '</div>';
-  if (node.ending) {
-    const sk = node.sbti, s = story.sbti_types[sk];
-    html += '<div id="sbti"><div class="sbti-tag">你的AI焦虑类型</div><div id="sbti-type">' + sk + '</div><div id="sbti-name">' + s.name + '</div><div id="sbti-desc">' + s.desc + '</div></div>';
-    state.sbtiTypes.push(sk);
+function buildResumeHtml(resume) {
+  if (!resume.name) {
+    return `<div class="resume-card resume-blank"><div class="resume-quote">"${resume.quote || ''}"</div></div>`;
   }
+  let expHtml = '';
+  for (const exp of (resume.experience || [])) {
+    expHtml += `<div class="resume-exp-item">
+      <div class="resume-exp-header">
+        <span class="resume-exp-role">${exp.role}</span>
+        <span class="resume-exp-period">${exp.period}</span>
+      </div>
+      <div class="resume-exp-company">${exp.company}</div>
+      <div class="resume-exp-desc">${exp.desc}</div>
+    </div>`;
+  }
+  let skillsHtml = '';
+  for (const s of (resume.skills || [])) {
+    skillsHtml += `<span class="resume-skill">${s}</span>`;
+  }
+  let html = `<div class="resume-card"><div class="resume-full">`;
+  html += `<div class="resume-header">
+    <div class="resume-name">${resume.name}</div>
+    <div class="resume-title">${resume.title || ''}</div>
+    <div class="resume-contact">${resume.contact || ''}</div>
+  </div>`;
+  if (expHtml) html += `<div class="resume-section"><div class="resume-section-title">经历</div>${expHtml}</div>`;
+  if (skillsHtml) html += `<div class="resume-section"><div class="resume-section-title">技能</div><div class="resume-skills">${skillsHtml}</div></div>`;
+  if (resume.quote) html += `<div class="resume-quote-footer">"${resume.quote}"</div>`;
+  html += `</div></div>`;
+  return html;
+}
+
+function render() {
+  const node = story.nodes[state.node];
+  if (!node) { document.getElementById('game').innerHTML = '<div id="text">节点不存在: ' + state.node + '</div>'; return; }
+
+  let html = '';
+
+  // Chapter
+  if (node.text.match(/【第.+?】/)) {
+    html += `<div id="chapter">${node.text.match(/【(.+?)】/)[1]}</div>`;
+  } else if (state.node === 'prologue') {
+    html += `<div id="chapter">序章</div>`;
+  }
+
+  // Text
+  html += `<div id="text">${node.text}</div>`;
+
+  // SBTI
+  if (node.ending) {
+    const sbti = story.sbti_types[node.sbti];
+    html += `<div id="sbti">
+      <div class="sbti-tag">你的AI焦虑类型</div>
+      <div id="sbti-type">${node.sbti}</div>
+      <div id="sbti-name">${sbti.name}</div>
+      <div id="sbti-desc">${sbti.desc}</div>
+    </div>`;
+    // Resume
+    html += `<div id="resume">${buildResumeHtml(node.resume || {})}</div>`;
+    document.getElementById('share-btn').style.display = 'block';
+    document.getElementById('restart-btn').style.display = 'block';
+    state.sbtiTypes.push(node.sbti);
+  }
+
+  // Choices
   if (node.choices && node.choices.length > 0) {
-    html += '<div id="choices">';
+    html += `<div id="choices">`;
     for (const c of node.choices) {
       if (c.requires && !c.requires.some(t => state.tags.includes(t))) continue;
-      const tag = c.tags ? c.tags.map(t => '<span style="font-size:10px;color:#888;margin-right:4px">#' + t + '</span>').join('') : '';
-      var _efx = JSON.stringify(c.effects || {});
-var _tgs = JSON.stringify(c.tags || []);
-html += '<button class="choice" data-next="' + c.next + '" data-effects="' + encodeURIComponent(JSON.stringify(c.effects || {})) + '" data-tags="' + encodeURIComponent(JSON.stringify(c.tags || [])) + '">' + tag + c.text + '</button>';
+      const tag = c.tags ? c.tags.map(t => `<span style="font-size:10px;color:#888;margin-right:4px">#${t}</span>`).join('') : '';
+      html += `<button class="choice" onclick="choose('${c.next}', ${JSON.stringify(c.effects || {})}, ${JSON.stringify(c.tags || [])})">${tag}${c.text}</button>`;
     }
-    html += '</div>';
+    html += `</div>`;
   } else if (node.ending) {
-    html += '<div style="text-align:center;color:#6b6b7a;font-size:13px;margin-top:8px">— 完 —</div>';
+    html += `<div style="text-align:center;color:var(--muted);font-size:13px;margin-top:8px">— 完 —</div>`;
   }
-  let sHtml = '';
-  for (const [k, v] of Object.entries(state.stats)) {
-    const c = story.stats[k], pct = Math.round(v / c.max * 100);
-    const col = k === 'anxiety' ? (pct > 70 ? '#e85d5d' : pct > 40 ? '#e8c96e' : '#5de8a0') : '#5de8a0';
-    sHtml += '<div class="stat"><span class="stat-label">' + c.label + '</span><div class="stat-bar"><div class="stat-fill" style="width:' + pct + '%;background:' + col + '"></div></div><span style="font-size:11px;color:' + col + '">' + v + '</span></div>';
-  }
-  document.getElementById('stats').innerHTML = sHtml;
-  document.getElementById('stats').style.display = 'flex';
+
   document.getElementById('game').innerHTML = html;
-  document.getElementById('choices').onclick = function(e) {
-    var btn = e.target.closest('.choice');
-    if (!btn) return;
-    var n = btn.getAttribute('data-next');
-    var ef = btn.getAttribute('data-effects');
-    var tg = btn.getAttribute('data-tags');
-    choose(n, ef ? JSON.parse(decodeURIComponent(ef)) : {}, tg ? JSON.parse(decodeURIComponent(tg)) : []);
-  };
+
+  // Stats
+  const statsEl = document.getElementById('stats');
+  let statsHtml = '';
+  for (const [key, val] of Object.entries(state.stats)) {
+    const cfg = story.stats[key];
+    const pct = Math.round((val / cfg.max) * 100);
+    const color = key === 'anxiety' ? (pct > 70 ? '#e85d5d' : pct > 40 ? '#e8c96e' : '#5de8a0') : '#5de8a0';
+    statsHtml += `<div class="stat"><span class="stat-label">${cfg.label}</span><div class="stat-bar"><div class="stat-fill" style="width:${pct}%;background:${color}"></div></div><span style="font-size:11px;color:${color}">${val}</span></div>`;
+  }
+  statsEl.innerHTML = statsHtml;
+  statsEl.style.display = 'flex';
+  statsEl.style.flexDirection = 'column';
+  statsEl.style.gap = '6px';
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function choose(next, effects, tags) { console.log("choose called:", next, effects);
-  for (const [k, v] of Object.entries(effects)) {
-    if (story.stats[k]) state.stats[k] = Math.max(story.stats[k].min || 0, Math.min(story.stats[k].max || 100, state.stats[k] + v));
+function choose(next, effects, tags) {
+  for (const [key, val] of Object.entries(effects)) {
+    if (story.stats[key]) {
+      state.stats[key] = Math.max(story.stats[key].min, Math.min(story.stats[key].max, state.stats[key] + val));
+    }
   }
   if (tags) state.tags.push(...tags);
   state.node = next;
+  render();
+  updateProgress();
+}
+
+function updateProgress() {
+  const visited = new Set();
+  function walk(n) {
+    if (visited.has(n)) return;
+    visited.add(n);
+    const node = story.nodes[n];
+    if (node && node.choices) {
+      node.choices.forEach(c => { if (!c.requires) walk(c.next); });
+    }
+  }
+  walk(story.game.start);
+  const pct = Math.min(100, Math.round((visited.size / Object.keys(story.nodes).length) * 100));
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+function shareResult() {
+  const key = state.sbtiTypes[state.sbtiTypes.length - 1];
+  const sbti = story.sbti_types[key];
+  const resume = story.nodes[state.node].resume || {};
+  const text = `我的AI焦虑类型是 ${key} · ${sbti.name}\n${sbti.desc}\n\n${resume.quote ? '「' + resume.quote + '」\n\n' : ''}来测试你的：《最后的简历》\n🌐 https://shawnjlewis.github.io/ai-anxiety/`;
+  if (navigator.share) {
+    navigator.share({ title: '我的AI焦虑类型', text });
+  } else {
+    navigator.clipboard.writeText(text).then(() => alert('已复制到剪贴板'));
+  }
+}
+
+function restartGame() {
+  localStorage.removeItem('ai-anxiety-state');
+  state = { node: story.game.start, stats: {}, tags: [], sbtiTypes: [] };
+  for (const [key, cfg] of Object.entries(story.stats)) state.stats[key] = cfg.start;
+  document.getElementById('share-btn').style.display = 'none';
+  document.getElementById('restart-btn').style.display = 'none';
+  document.getElementById('progress-bar').style.width = '0%';
   render();
 }
 
